@@ -78,6 +78,9 @@
                 <button onclick="resetData()" class="bg-slate-600 hover:bg-slate-700 text-white text-xs px-3 py-2 rounded-lg font-medium shadow transition flex items-center gap-1.5" title="รีเซ็ตข้อมูลทั้งหมด">
                     <i class="fa-solid fa-rotate-right"></i> รีเซ็ตค่า
                 </button>
+                <button onclick="openHistory()" class="bg-sky-600 hover:bg-sky-700 text-white text-xs px-3 py-2 rounded-lg font-medium shadow transition flex items-center gap-1.5" title="ดูข้อมูลย้อนหลังจาก Google Sheet">
+                    <i class="fa-solid fa-clock-rotate-left"></i> ดูข้อมูลย้อนหลัง
+                </button>
                 <button onclick="exportData()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg font-medium shadow transition flex items-center gap-1.5">
                     <i class="fa-solid fa-file-excel"></i> ส่งออกข้อมูล
                 </button>
@@ -304,6 +307,27 @@
         </div>
     </div>
 
+        <!-- History Modal -->
+    <div id="history-modal" class="fixed inset-0 bg-slate-900/50 z-50 hidden items-center justify-center p-3">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-6xl max-h-[94vh] flex flex-col">
+            <div class="flex items-center justify-between p-3 border-b bg-sky-50 rounded-t-xl">
+                <h3 class="font-bold text-base text-sky-800"><i class="fa-solid fa-clock-rotate-left"></i> ดูข้อมูลย้อนหลัง</h3>
+                <button onclick="closeHistory()" class="text-slate-400 hover:text-slate-600 text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-3 flex flex-wrap items-end gap-2 text-xs border-b">
+                <label>ตั้งแต่<br><input type="date" id="hist-from" class="border rounded p-1.5"></label>
+                <label>ถึง<br><input type="date" id="hist-to" class="border rounded p-1.5"></label>
+                <label>เวร<br><select id="hist-shift" onchange="renderHistory()" class="border rounded p-1.5">
+                    <option value="">ทุกเวร</option><option value="morning">เช้า</option><option value="evening">บ่าย</option><option value="night">ดึก</option></select></label>
+                <label>หอผู้ป่วย<br><select id="hist-ward" onchange="renderHistory()" class="border rounded p-1.5 max-w-[12rem]"><option value="">ทุกหอ (รวม)</option></select></label>
+                <button onclick="loadHistory()" id="hist-btn" class="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg font-semibold">ค้นหา</button>
+                <button onclick="exportHistory()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg font-semibold"><i class="fa-solid fa-file-excel"></i> ส่งออก Excel</button>
+                <span id="hist-status" class="text-slate-500"></span>
+            </div>
+            <div id="hist-result" class="p-3 overflow-auto text-xs text-slate-700">เลือกช่วงวันที่แล้วกด "ค้นหา"</div>
+        </div>
+    </div>
+
     <!-- Google Sheet Settings Modal -->
     <div id="google-sheet-modal" class="fixed inset-0 bg-slate-900/50 z-50 hidden items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full flex flex-col overflow-hidden border border-indigo-200">
@@ -345,7 +369,8 @@
             { id: 14, name: '14 อช.', phone: '11420-1', totalBeds: 30, ven: 0, hf: 0, bipap: 0, newAdmit: 0, admitTransfer: 0, transferOut: 0, discharge: 0, carryOver: 30, patients: 30, noteType: '', noteVal1: 0, noteVal2: 0, reservation: '', planMorning: 0, cpr: 0, icu: 0, pc: 0, sepsis: 0, nr: 0, fullMed: 0, unexpectedDeath: 0, productivity: '', workload: 0, rn: 0, pn: 0, na: 0, otherStaff: 0, remark: '', evac1: '', evac2: '', evac3: '' },
             { id: 15, name: '14อญ.', phone: '11430-1', totalBeds: 30, ven: 0, hf: 0, bipap: 0, newAdmit: 0, admitTransfer: 0, transferOut: 0, discharge: 0, carryOver: 30, patients: 30, noteType: '', noteVal1: 0, noteVal2: 0, reservation: '', planMorning: 0, cpr: 0, icu: 0, pc: 0, sepsis: 0, nr: 0, fullMed: 0, unexpectedDeath: 0, productivity: '', workload: 0, rn: 0, pn: 0, na: 0, otherStaff: 0, remark: '', evac1: '', evac2: '', evac3: '' },
             { id: 16, name: '15 อญ.', phone: '11520-1', totalBeds: 30, ven: 0, hf: 0, bipap: 0, newAdmit: 0, admitTransfer: 0, transferOut: 0, discharge: 0, carryOver: 30, patients: 30, noteType: '', noteVal1: 0, noteVal2: 0, reservation: '', planMorning: 0, cpr: 0, icu: 0, pc: 0, sepsis: 0, nr: 0, fullMed: 0, unexpectedDeath: 0, productivity: '', workload: 0, rn: 0, pn: 0, na: 0, otherStaff: 0, remark: '', evac1: '', evac2: '', evac3: '' },
-            { id: 17, name: '15 กุมาร', phone: '11530-1', totalBeds: 25, ven: 0, hf: 0, bipap: 0, newAdmit: 0, admitTransfer: 0, transferOut: 0, discharge: 0, carryOver: 25, patients: 25, noteType: '', noteVal1: 0, noteVal2: 0, reservation: '', planMorning: 0, cpr: 0, icu: 0, pc: 0, sepsis: 0, nr: 0, fullMed: 0, unexpectedDeath: 0, productivity: '', workload: 0, rn: 0, pn: 0, na: 0, otherStaff: 0, remark: '', evac1: '', evac2: '', evac3: '' },
+            { id: 17, name: 'กุมาร', group: '15 กุมาร', phone: '11530-1', totalBeds: 22, ven: 0, hf: 0, bipap: 0, newAdmit: 0, admitTransfer: 0, transferOut: 0, discharge: 0, carryOver: 22, patients: 22, noteType: '', noteVal1: 0, noteVal2: 0, reservation: '', planMorning: 0, cpr: 0, icu: 0, pc: 0, sepsis: 0, nr: 0, fullMed: 0, unexpectedDeath: 0, productivity: '', workload: 0, rn: 0, pn: 0, na: 0, otherStaff: 0, remark: '', evac1: '', evac2: '', evac3: '' },
+            { id: 29, name: 'PICU', group: '15 กุมาร', phone: '', totalBeds: 3, ven: 0, hf: 0, bipap: 0, newAdmit: 0, admitTransfer: 0, transferOut: 0, discharge: 0, carryOver: 3, patients: 3, noteType: '', noteVal1: 0, noteVal2: 0, reservation: '', planMorning: 0, cpr: 0, icu: 0, pc: 0, sepsis: 0, nr: 0, fullMed: 0, unexpectedDeath: 0, productivity: '', workload: 0, rn: 0, pn: 0, na: 0, otherStaff: 0, remark: '', evac1: '', evac2: '', evac3: '' },
             { id: 18, name: 'Pre IMC', group: '17 นรีเวช', phone: '11730-1', totalBeds: 4, ven: 0, hf: 0, bipap: 0, newAdmit: 0, admitTransfer: 0, transferOut: 0, discharge: 0, carryOver: 4, patients: 4, noteType: '', noteVal1: 0, noteVal2: 0, reservation: '', planMorning: 0, cpr: 0, icu: 0, pc: 0, sepsis: 0, nr: 0, fullMed: 0, unexpectedDeath: 0, productivity: '', workload: 0, rn: 0, pn: 0, na: 0, otherStaff: 0, remark: '', evac1: '', evac2: '', evac3: '' },
             { id: 19, name: 'อายุรกรรม', group: '17 นรีเวช', phone: '11730-2', totalBeds: 4, ven: 0, hf: 0, bipap: 0, newAdmit: 0, admitTransfer: 0, transferOut: 0, discharge: 0, carryOver: 4, patients: 4, noteType: '', noteVal1: 0, noteVal2: 0, reservation: '', planMorning: 0, cpr: 0, icu: 0, pc: 0, sepsis: 0, nr: 0, fullMed: 0, unexpectedDeath: 0, productivity: '', workload: 0, rn: 0, pn: 0, na: 0, otherStaff: 0, remark: '', evac1: '', evac2: '', evac3: '' },
             { id: 20, name: 'IMC', group: '17 นรีเวช', phone: '', totalBeds: 12, ven: 0, hf: 0, bipap: 0, newAdmit: 0, admitTransfer: 0, transferOut: 0, discharge: 0, carryOver: 12, patients: 12, noteType: '', noteVal1: 0, noteVal2: 0, reservation: '', planMorning: 0, cpr: 0, icu: 0, pc: 0, sepsis: 0, nr: 0, fullMed: 0, unexpectedDeath: 0, productivity: '', workload: 0, rn: 0, pn: 0, na: 0, otherStaff: 0, remark: '', evac1: '', evac2: '', evac3: '' },
@@ -359,12 +384,109 @@
             { id: 28, name: '16 พิเศษ', phone: '11600-13', totalBeds: 12, ven: 0, hf: 0, bipap: 0, newAdmit: 0, admitTransfer: 0, transferOut: 0, discharge: 0, carryOver: 12, patients: 12, noteType: 'spec_sam', noteVal1: 0, noteVal2: 0, reservation: '', planMorning: 0, cpr: 0, icu: 0, pc: 0, sepsis: 0, nr: 0, fullMed: 0, unexpectedDeath: 0, productivity: '', workload: 0, rn: 0, pn: 0, na: 0, otherStaff: 0, remark: '', evac1: '', evac2: '', evac3: '' }
         ];
 
+
+        // แยก "15 กุมาร" เดิม (25 เตียง) เป็น กุมาร 22 เตียง + PICU 3 เตียง สำหรับข้อมูลที่เคยบันทึกไว้
+        function migratePediatricWard(arr) {
+            if (!Array.isArray(arr)) return arr;
+            const idx = arr.findIndex(w => w && w.name === '15 กุมาร' && !w.group);
+            if (idx === -1) return arr;
+            const old = arr[idx];
+            const oldCarry = Number(old.carryOver) || 0;
+            const kids = Object.assign({}, old, { name: 'กุมาร', group: '15 กุมาร', totalBeds: 22, carryOver: Math.min(oldCarry, 22) });
+            const picuTemplate = defaultWardsData.find(w => w.id === 29);
+            const picu = Object.assign({}, picuTemplate, { carryOver: Math.min(Math.max(oldCarry - 22, 0), 3) });
+            recomputeWardPatients(kids);
+            recomputeWardPatients(picu);
+            const copy = arr.slice();
+            copy.splice(idx, 1, kids, picu);
+            return copy;
+        }
+
         let wardsData = (() => {
             const stored = JSON.parse(localStorage.getItem('hospital_wards_data_pink'));
-            return (Array.isArray(stored) && stored.length > 0) ? stored : defaultWardsData;
+            return (Array.isArray(stored) && stored.length > 0) ? migratePediatricWard(stored) : defaultWardsData;
         })();
         let currentEditingIndex = null;
         let lastEditedWardIndex = null;
+
+        // ===== ระบบบันทึกประวัติรายวัน/รายเวร =====
+        // activeRecord = "วันที่ + เวร" ที่กำลังกรอกอยู่ ใช้เป็นคีย์ของข้อมูลใน Google Sheet
+        let activeRecord = { date: '', shiftKey: 'morning', shift: '' };
+        let dirtyWardIds = new Set();      // หอที่แก้ไขแล้วแต่ยังไม่ได้ส่งขึ้นชีต
+        let lastSyncedMetaSnapshot = '';   // สถานะ ER + ค่ากลุ่มล่าสุดที่ส่งแล้ว
+        let recordSeeded = false;          // ชีตมีข้อมูลของวันที่/เวรนี้อยู่แล้วหรือยัง
+        let fetchRequestSeq = 0;
+
+        const ER_FIELDS = {
+            normal: 'er-normal', covid: 'er-covid', pui: 'er-pui', yellow: 'er-yellow', red: 'er-red',
+            staffRn: 'er-staff-rn', oxRa: 'er-ox-ra', oxCannula: 'er-ox-cannula', oxMask: 'er-ox-mask',
+            oxHf: 'er-ox-hf', oxTube: 'er-ox-tube'
+        };
+
+        function getLocalDateString(d = new Date()) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        function shiftKeyFromValue(v) {
+            v = v || '';
+            if (v.includes('ดึก')) return 'night';
+            if (v.includes('บ่าย')) return 'evening';
+            return 'morning';
+        }
+
+        function getShiftKey() {
+            const el = document.getElementById('shift-select');
+            return shiftKeyFromValue(el ? el.value : '');
+        }
+
+        function getDefaultShiftValue() {
+            const h = new Date().getHours();
+            const key = h >= 8 && h < 16 ? 'morning' : (h >= 16 ? 'evening' : 'night');
+            const el = document.getElementById('shift-select');
+            if (!el) return '';
+            const opt = Array.from(el.options).find(o => shiftKeyFromValue(o.value) === key);
+            return opt ? opt.value : el.value;
+        }
+
+        function markWardDirty(index) {
+            lastEditedWardIndex = index;
+            const w = wardsData[index];
+            if (w) dirtyWardIds.add(w.id);
+        }
+
+        function collectErData() {
+            const out = {};
+            Object.keys(ER_FIELDS).forEach(k => {
+                const el = document.getElementById(ER_FIELDS[k]);
+                out[k] = el ? (Number(el.value) || 0) : 0;
+            });
+            return out;
+        }
+
+        function applyErData(er) {
+            Object.keys(ER_FIELDS).forEach(k => {
+                const el = document.getElementById(ER_FIELDS[k]);
+                if (el) el.value = (er && er[k] !== undefined && er[k] !== null && er[k] !== '') ? er[k] : 0;
+            });
+        }
+
+        function getMetaSnapshot() {
+            return JSON.stringify({ er: collectErData(), groupNotes: groupNotes });
+        }
+
+        // ก่อนเปลี่ยนวันที่/เวร ให้ส่งข้อมูลที่ค้างอยู่ไปเก็บใน "วันที่/เวรเดิม" ก่อน
+        async function flushBeforeSwitch() {
+            if (!googleSheetWebhookUrl) return;
+            const pending = dirtyWardIds.size > 0 || getMetaSnapshot() !== lastSyncedMetaSnapshot;
+            if (!pending) return;
+            if (autoSyncTimer) { clearTimeout(autoSyncTimer); autoSyncTimer = null; }
+            if (isAutoSyncEnabled || confirm('มีข้อมูลที่ยังไม่ได้บันทึกลง Google Sheet ต้องการบันทึกก่อนเปลี่ยนวันที่/เวรหรือไม่?')) {
+                await syncToGoogleSheet(true);
+            }
+        }
         const DEFAULT_GS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyboDV_0xWmFt8JqL104RMr3JsuXnxQY6yEp1ty1cE0BBesuEbarsyCUDuGxtaENolF7g/exec';
         let googleSheetWebhookUrl = localStorage.getItem('hospital_gs_webhook_url') || DEFAULT_GS_WEBHOOK_URL;
         let isAutoSyncEnabled = localStorage.getItem('hospital_auto_sync') === null ? true : localStorage.getItem('hospital_auto_sync') === 'true';
@@ -381,11 +503,13 @@
             if(toggle) toggle.checked = isAutoSyncEnabled;
             updateAutoSyncLabel(isAutoSyncEnabled);
 
-            if (!selectedDate) {
-                const now = new Date();
-                selectedDate = now.toISOString().split('T')[0];
-                localStorage.setItem('hospital_selected_date', selectedDate);
-            }
+            // เริ่มที่วันที่ปัจจุบัน (เวลาท้องถิ่น) และเวรตามเวลาปัจจุบันทุกครั้งที่เปิดหน้า
+            selectedDate = getLocalDateString();
+            localStorage.setItem('hospital_selected_date', selectedDate);
+            const shiftSel = document.getElementById('shift-select');
+            if (shiftSel) shiftSel.value = getDefaultShiftValue();
+            activeRecord = { date: selectedDate, shiftKey: getShiftKey(), shift: shiftSel ? shiftSel.value : '' };
+            lastSyncedMetaSnapshot = getMetaSnapshot();
             const dateInput = document.getElementById('date-select');
             if (dateInput) dateInput.value = selectedDate;
             updateHeaderSubtitle();
@@ -411,11 +535,15 @@
             document.getElementById('header-subtitle').innerText = `ยอดเตียง ${formatThaiDate(selectedDate)} เวลา ${timePart} น.`;
         }
 
-        function changeDate(dateStr) {
+        async function changeDate(dateStr) {
+            if (!dateStr) return;
+            await flushBeforeSwitch();
             selectedDate = dateStr;
             localStorage.setItem('hospital_selected_date', dateStr);
+            activeRecord.date = dateStr;
             updateHeaderSubtitle();
             showNotification('เปลี่ยนวันที่สำเร็จ');
+            fetchFromGoogleSheet();
         }
 
         function toggleAutoSync(enabled) {
@@ -446,6 +574,7 @@
             if (!isAutoSyncEnabled) return;
             if (autoSyncTimer) clearTimeout(autoSyncTimer);
             autoSyncTimer = setTimeout(() => {
+                autoSyncTimer = null;
                 syncToGoogleSheet(true);
             }, 1500);
         }
@@ -484,6 +613,15 @@
                 }
                 return;
             }
+            if (!activeRecord.date) return;
+
+            // บันทึกอัตโนมัติ = ส่งเฉพาะหอที่แก้ไข (ไม่ทับข้อมูลของหน่วยงานอื่น)
+            // กดปุ่มบันทึกเอง = ส่งครบทุกหอ
+            const isFull = !isAuto;
+            const changedWards = isFull ? wardsData.slice() : wardsData.filter(w => dirtyWardIds.has(w.id));
+            const metaSnapshot = getMetaSnapshot();
+            const metaChanged = isFull || metaSnapshot !== lastSyncedMetaSnapshot;
+            if (isAuto && changedWards.length === 0 && !metaChanged) return;
 
             const syncBtn = document.getElementById('sync-btn');
             if (!isAuto && syncBtn) {
@@ -491,23 +629,28 @@
                 syncBtn.disabled = true;
             }
 
-            const changedWard = (lastEditedWardIndex !== null && wardsData[lastEditedWardIndex]) ? wardsData[lastEditedWardIndex] : null;
-
+            const sentIds = changedWards.map(w => w.id);
+            const rec = activeRecord;
             const payload = {
                 action: 'save',
+                version: 2,
+                saveMode: isFull ? 'full' : 'partial',
                 timestamp: new Date().toISOString(),
-                shift: document.getElementById('shift-select').value,
-                erData: {
-                    normal: document.getElementById('er-normal').value,
-                    covid: document.getElementById('er-covid').value,
-                    pui: document.getElementById('er-pui').value,
-                    yellow: document.getElementById('er-yellow').value,
-                    red: document.getElementById('er-red').value,
-                    staffRn: document.getElementById('er-staff-rn').value
-                },
+                date: rec.date,
+                shiftKey: rec.shiftKey,
+                shift: rec.shift,
+                erData: metaChanged ? collectErData() : null,
+                groupNotes: metaChanged ? groupNotes : null,
+                changedWards: changedWards,
+                // ถ้าวันที่/เวรนี้ยังไม่มีข้อมูลในชีต ให้สร้างแถวของทุกหอ (เฉพาะที่ยังไม่มี ไม่ทับของเดิม)
+                seedWards: (!isFull && !recordSeeded) ? wardsData : [],
+                // ฟิลด์เดิม เผื่อยังใช้ Apps Script เวอร์ชันเก่า
                 wards: wardsData,
-                changedWard: changedWard
+                changedWard: changedWards.length ? changedWards[changedWards.length - 1] : null
             };
+
+            sentIds.forEach(id => dirtyWardIds.delete(id));
+            if (metaChanged) lastSyncedMetaSnapshot = metaSnapshot;
 
             try {
                 await fetch(googleSheetWebhookUrl, {
@@ -516,13 +659,16 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+                recordSeeded = true;
                 if (!isAuto) {
-                    showNotification('ส่งข้อมูลไปยัง Google Sheet เรียบร้อยแล้ว');
+                    showNotification(`บันทึก Google Sheet เรียบร้อย (${formatThaiDate(rec.date)} ${rec.shiftKey === 'night' ? 'เวรดึก' : rec.shiftKey === 'evening' ? 'เวรบ่าย' : 'เวรเช้า'})`);
                 } else {
                     showSubtleSyncIndicator();
                 }
             } catch (error) {
                 console.error(error);
+                sentIds.forEach(id => dirtyWardIds.add(id));
+                if (metaChanged) lastSyncedMetaSnapshot = '';
                 if (!isAuto) {
                     showNotification('เกิดข้อผิดพลาดในการบันทึก Google Sheet');
                 }
@@ -548,24 +694,60 @@
         }
 
         async function fetchFromGoogleSheet() {
-            if (!googleSheetWebhookUrl) return;
+            if (!googleSheetWebhookUrl || !activeRecord.date) return;
+            const seq = ++fetchRequestSeq;
+            const rec = { ...activeRecord };
             try {
-                const response = await fetch(googleSheetWebhookUrl);
+                const sep = googleSheetWebhookUrl.includes('?') ? '&' : '?';
+                const url = `${googleSheetWebhookUrl}${sep}action=get&date=${encodeURIComponent(rec.date)}&shiftKey=${encodeURIComponent(rec.shiftKey)}`;
+                const response = await fetch(url);
                 const result = await response.json();
-                if (result && Array.isArray(result.wards) && result.wards.length > 0) {
-                    wardsData = result.wards;
+                if (seq !== fetchRequestSeq) return; // มีการเปลี่ยนวันที่/เวรซ้ำระหว่างรอ ให้ทิ้งผลเก่า
+
+                if (result && result.found === false) {
+                    // ยังไม่เคยบันทึกวันที่/เวรนี้: ล้างข้อมูล ER และค่ากลุ่ม (เป็นตัวเลขเฉพาะเวร)
+                    // ส่วนตารางหอผู้ป่วยคงค่าที่แสดงอยู่ไว้เป็นจุดเริ่มต้น
+                    recordSeeded = false;
+                    applyErData({});
+                    groupNotes = {};
+                    saveGroupNotes();
+                    dirtyWardIds.clear();
+                    lastSyncedMetaSnapshot = getMetaSnapshot();
                     renderWardsTable();
                     updateFooter();
-                    showNotification('ดึงข้อมูลล่าสุดจาก Google Sheet สำเร็จ');
+                    showNotification('ยังไม่มีข้อมูลของวันที่/เวรนี้ในชีต ตารางแสดงค่าล่าสุดที่มี กรุณาตรวจสอบก่อนบันทึก');
+                    return;
+                }
+
+                if (result && Array.isArray(result.wards) && result.wards.length > 0) {
+                    const order = new Map(wardsData.map((w, i) => [w.id, i]));
+                    const loaded = result.wards.slice().sort((a, b) =>
+                        (order.has(a.id) ? order.get(a.id) : 1e9) - (order.has(b.id) ? order.get(b.id) : 1e9));
+                    wardsData = migratePediatricWard(loaded);
+                    if (result.erData) applyErData(result.erData);
+                    if (result.groupNotes && typeof result.groupNotes === 'object') groupNotes = result.groupNotes;
+                    saveGroupNotes();
+                    localStorage.setItem('hospital_wards_data_pink', JSON.stringify(wardsData));
+                    recordSeeded = result.found === true;
+                    dirtyWardIds.clear();
+                    lastSyncedMetaSnapshot = getMetaSnapshot();
+                    renderWardsTable();
+                    updateFooter();
+                    showNotification('ดึงข้อมูลของวันที่/เวรนี้จาก Google Sheet สำเร็จ');
                 }
             } catch (e) {
                 console.log('Could not auto-fetch from Google Sheet or endpoint returns HTML/No-CORS');
             }
         }
 
-        function changeShift(shiftName) {
+        async function changeShift(shiftName) {
+            // ค่าใน dropdown เปลี่ยนแล้ว แต่ activeRecord ยังเป็นเวรเดิม จึงบันทึกของเดิมให้เรียบร้อยก่อน
             updateHeaderSubtitle();
+            await flushBeforeSwitch();
+            activeRecord.shift = shiftName;
+            activeRecord.shiftKey = getShiftKey();
             showNotification(`เปลี่ยนเป็น ${shiftName} สำเร็จ`);
+            fetchFromGoogleSheet();
         }
 
         function resetData() {
@@ -588,6 +770,7 @@
             if (!groupNotes[groupName]) groupNotes[groupName] = {};
             groupNotes[groupName][field] = Number(value) || 0;
             saveGroupNotes();
+            triggerAutoSync();
         }
 
         function recomputeWardPatients(ward) {
@@ -1028,7 +1211,7 @@
 
         function saveModalWardData() {
             if (currentEditingIndex === null) return;
-            lastEditedWardIndex = currentEditingIndex;
+            markWardDirty(currentEditingIndex);
             const w = wardsData[currentEditingIndex];
             
             w.name = document.getElementById('m-name').value;
@@ -1094,7 +1277,7 @@
         }
 
         function updateWardField(index, field, value) {
-            lastEditedWardIndex = index;
+            markWardDirty(index);
             if (['totalBeds', 'carryOver', 'patients', 'ven', 'hf', 'bipap', 'newAdmit', 'admitTransfer', 'transferOut', 'discharge', 'noteVal1', 'noteVal2', 'noteVal3', 'noteVal4', 'planMorning', 'cpr', 'icu', 'pc', 'sepsis', 'nr', 'fullMed', 'unexpectedDeath', 'rn', 'pn', 'na', 'otherStaff'].includes(field)) {
                 wardsData[index][field] = Number(value) || 0;
             } else {
@@ -1133,7 +1316,7 @@
                 productivity: '', workload: 0, rn: 0, pn: 0, na: 0, otherStaff: 0,
                 remark: '', evac1: '', evac2: '', evac3: ''
             });
-            lastEditedWardIndex = wardsData.length - 1;
+            markWardDirty(wardsData.length - 1);
             saveToLocalStorage();
             renderWardsTable();
             updateFooter();
@@ -1172,7 +1355,7 @@
             let hfExtUsed = 0;
             
             wardsData.forEach(w => {
-                if (w.id >= 7 && w.id <= 28) {
+                if ((w.id >= 7 && w.id <= 28) || w.id === 29) {
                     ventExtUsed += Number(w.ven) || 0;
                     hfExtUsed += Number(w.hf) || 0;
                 }
@@ -1317,5 +1500,89 @@
             }, 2500);
         }
     </script>
+<script>
+/* ===== ดูข้อมูลย้อนหลัง (อ่านจากชีต Wards/Meta ผ่าน Apps Script action=range) ===== */
+const HIST_SHIFT = { morning: 'เช้า', evening: 'บ่าย', night: 'ดึก' };
+const HIST_ORDER = { morning: 0, evening: 1, night: 2 };
+let histData = null;
+const hEsc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const hWard = w => [w.group, w.name].filter(Boolean).join(' ') || ('หอ ' + w.wardId);
+const hOcc = (p, b) => b > 0 ? Math.round(p * 1000 / b) / 10 : 0;
+
+function openHistory() {
+    const m = document.getElementById('history-modal');
+    m.classList.remove('hidden'); m.classList.add('flex');
+    const iso = d => d.toLocaleDateString('en-CA');
+    const to = new Date(), from = new Date(); from.setDate(to.getDate() - 6);
+    if (!document.getElementById('hist-to').value) { document.getElementById('hist-to').value = iso(to); document.getElementById('hist-from').value = iso(from); }
+}
+function closeHistory() { const m = document.getElementById('history-modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
+
+async function loadHistory() {
+    const status = document.getElementById('hist-status'), btn = document.getElementById('hist-btn');
+    if (!googleSheetWebhookUrl) { status.textContent = 'ยังไม่ได้ตั้งค่า Google Sheet URL'; return; }
+    const from = document.getElementById('hist-from').value, to = document.getElementById('hist-to').value;
+    if (!from || !to || from > to) { status.textContent = 'ช่วงวันที่ไม่ถูกต้อง'; return; }
+    btn.disabled = true; status.textContent = 'กำลังโหลด...';
+    try {
+        const sep = googleSheetWebhookUrl.includes('?') ? '&' : '?';
+        const res = await fetch(`${googleSheetWebhookUrl}${sep}action=range&from=${from}&to=${to}`);
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'error');
+        histData = data;
+        const sel = document.getElementById('hist-ward'), cur = sel.value, seen = new Map();
+        data.wards.forEach(w => seen.set(String(w.wardId), hWard(w)));
+        sel.innerHTML = '<option value="">ทุกหอ (รวม)</option>' + [...seen].map(([id, n]) => `<option value="${hEsc(id)}">${hEsc(n)}</option>`).join('');
+        sel.value = seen.has(cur) ? cur : '';
+        status.textContent = `พบ ${data.wards.length} รายการ`;
+        renderHistory();
+    } catch (e) {
+        status.textContent = 'โหลดข้อมูลไม่สำเร็จ (ตรวจสอบ Apps Script เวอร์ชัน 2 และ URL)';
+    } finally { btn.disabled = false; }
+}
+
+function histFiltered() {
+    if (!histData) return [];
+    const sh = document.getElementById('hist-shift').value, wd = document.getElementById('hist-ward').value;
+    return histData.wards.filter(w => (!sh || w.shiftKey === sh) && (!wd || String(w.wardId) === wd))
+        .sort((a, b) => b.date.localeCompare(a.date) || (HIST_ORDER[a.shiftKey] - HIST_ORDER[b.shiftKey]) || (a.wardId - b.wardId));
+}
+
+function renderHistory() {
+    const rows = histFiltered(), box = document.getElementById('hist-result');
+    if (!rows.length) { box.textContent = histData ? 'ไม่พบข้อมูลในช่วงที่เลือก' : 'เลือกช่วงวันที่แล้วกด "ค้นหา"'; return; }
+    const sum = new Map();
+    rows.forEach(w => {
+        const k = w.date + '|' + w.shiftKey;
+        const s = sum.get(k) || { date: w.date, shiftKey: w.shiftKey, beds: 0, pts: 0, adm: 0, tin: 0, tout: 0, dis: 0, n: 0 };
+        s.beds += +w.totalBeds || 0; s.pts += +w.patients || 0; s.adm += +w.newAdmit || 0; s.tin += +w.admitTransfer || 0;
+        s.tout += +w.transferOut || 0; s.dis += +w.discharge || 0; s.n++; sum.set(k, s);
+    });
+    const th = h => `<th class="px-2 py-1.5 text-left whitespace-nowrap">${h}</th>`, td = (v, c = '') => `<td class="px-2 py-1 whitespace-nowrap ${c}">${v}</td>`;
+    const bar = o => `<div class="flex items-center gap-2"><div class="w-24 h-2 bg-slate-200 rounded"><div class="h-2 rounded ${o > 100 ? 'bg-red-500' : o >= 85 ? 'bg-amber-500' : 'bg-emerald-500'}" style="width:${Math.min(o, 100)}%"></div></div>${o}%</div>`;
+    const sumHtml = [...sum.values()].map(s => `<tr class="border-t">${td(hEsc(formatThaiDate(s.date)))}${td(HIST_SHIFT[s.shiftKey] || s.shiftKey)}${td(s.n)}${td(s.beds)}${td(s.pts)}${td(bar(hOcc(s.pts, s.beds)))}${td(s.adm)}${td(s.tin)}${td(s.tout)}${td(s.dis)}</tr>`).join('');
+    const detHtml = rows.map(w => `<tr class="border-t">${td(hEsc(formatThaiDate(w.date)))}${td(HIST_SHIFT[w.shiftKey] || w.shiftKey)}${td(hEsc(hWard(w)))}${td(w.totalBeds)}${td(w.patients)}${td(bar(hOcc(+w.patients, +w.totalBeds)))}${td(w.ven)}${td(w.hf)}${td(w.bipap)}${td(w.newAdmit)}${td(w.admitTransfer)}${td(w.transferOut)}${td(w.discharge)}</tr>`).join('');
+    box.innerHTML = `
+        <h4 class="font-bold text-slate-800 mb-1">สรุปรายวัน/เวร ${document.getElementById('hist-ward').value ? '(เฉพาะหอที่เลือก)' : '(รวมทุกหอ)'}</h4>
+        <div class="overflow-x-auto mb-4"><table class="w-full"><thead class="bg-slate-100"><tr>${['วันที่','เวร','จำนวนหอ','เตียงรวม','ผู้ป่วย','อัตราครองเตียง','รับใหม่','รับย้าย','ย้ายออก','จำหน่าย'].map(th).join('')}</tr></thead><tbody>${sumHtml}</tbody></table></div>
+        <h4 class="font-bold text-slate-800 mb-1">รายละเอียดรายหอ</h4>
+        <div class="overflow-x-auto"><table class="w-full"><thead class="bg-slate-100"><tr>${['วันที่','เวร','หอ','เตียง','ผู้ป่วย','ครองเตียง','VEN','HF','BiPAP','รับใหม่','รับย้าย','ย้ายออก','จำหน่าย'].map(th).join('')}</tr></thead><tbody>${detHtml}</tbody></table></div>`;
+}
+
+function exportHistory() {
+    const rows = histFiltered();
+    if (!rows.length) { showNotification('ไม่มีข้อมูลให้ส่งออก'); return; }
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows.map(w => ({
+        'วันที่': w.date, 'เวร': HIST_SHIFT[w.shiftKey] || w.shiftKey, 'หอผู้ป่วย': hWard(w), 'เตียง': w.totalBeds, 'ผู้ป่วย': w.patients,
+        'ครองเตียง(%)': hOcc(+w.patients, +w.totalBeds), 'VEN': w.ven, 'HF': w.hf, 'BiPAP': w.bipap, 'รับใหม่': w.newAdmit,
+        'รับย้าย': w.admitTransfer, 'ย้ายออก': w.transferOut, 'จำหน่าย': w.discharge, 'ยกมา': w.carryOver, 'บันทึกล่าสุด': w.updatedAt }))), 'รายหอ');
+    const sh = document.getElementById('hist-shift').value;
+    const er = (histData.meta || []).filter(m => !sh || m.shiftKey === sh).sort((a, b) => b.date.localeCompare(a.date))
+        .map(m => Object.assign({ 'วันที่': m.date, 'เวร': HIST_SHIFT[m.shiftKey] || m.shiftKey }, m.er, { 'บันทึกล่าสุด': m.updatedAt }));
+    if (er.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(er), 'ER');
+    XLSX.writeFile(wb, `ประวัติยอดเตียง_${document.getElementById('hist-from').value}_${document.getElementById('hist-to').value}.xlsx`);
+}
+</script>
 </body>
 </html>
