@@ -306,6 +306,54 @@
     .report-scale-outer{overflow:visible;}
     .report-page{border:none; box-shadow:none; border-radius:0; padding:0; width:auto;}
   }
+
+  #mBar{display:none;}
+  body.mobile #mBar{display:flex; position:sticky; top:0; z-index:20; gap:8px; align-items:center; background:var(--surface); padding:8px 10px; border-bottom:1px solid var(--line); margin:12px -10px 0;}
+  #mBar select{flex:1; min-width:0; font-weight:700;}
+  #mBar button{width:46px; height:46px; font-size:22px; justify-content:center; padding:0;}
+  body.mobile .wrap{padding:10px 10px 90px;}
+  body.mobile .letterhead{padding:12px;}
+  body.mobile .letterhead h1{font-size:15px;}
+  body.mobile .letterhead .sub, body.mobile .letterhead .org{display:none;}
+  body.mobile .logo-ring{width:44px; height:44px;}
+  body.mobile .bar{padding:10px; gap:10px;}
+  body.mobile #ovSection{display:none;}
+  body.mobile .ward{display:none;}
+  body.mobile .ward.m-active{display:block;}
+  body.mobile .ward .ward-body{display:block !important;}
+  body.mobile .ward-head{cursor:default;}
+  body.mobile .caret{display:none;}
+  body.mobile .grid-6, body.mobile .grid-4, body.mobile .grid-3{grid-template-columns:repeat(2,1fr);}
+  body.mobile input, body.mobile select, body.mobile textarea{font-size:16px;}
+  body.mobile input[type=number]{padding:12px 10px;}
+  body.mobile .shift-toggle button{padding:10px 12px;}
+  body.mobile .btn{min-height:42px;}
+
+  .kpis{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px;}
+  .kpi{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px;}
+  .kpi .l{font-size:12px; font-weight:600; color:var(--ink-soft);}
+  .kpi .v{font-family:'IBM Plex Mono',monospace; font-size:28px; font-weight:600; color:var(--green-dark); line-height:1.25;}
+  .kpi .s{font-size:11.5px; color:var(--ink-soft);}
+  .kpi.warn .v{color:var(--alert);} .kpi.pink .v{color:var(--pink);}
+  .dash-grid{display:grid; grid-template-columns:2fr 1fr; gap:14px; margin-top:16px;}
+  @media (max-width:900px){.dash-grid{grid-template-columns:1fr;}}
+  .occ-row{display:grid; grid-template-columns:150px 1fr 150px; gap:8px; align-items:center; margin-bottom:7px; font-size:12.5px;}
+  .occ-row .n{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:600;}
+  .occ-row .p{text-align:right; font-family:'IBM Plex Mono',monospace; font-size:12px;}
+  .occ-bar{height:12px; background:var(--surface-2); border-radius:99px; overflow:hidden;}
+  .occ-bar i{display:block; height:100%; border-radius:99px; background:var(--green);}
+  .occ-bar i.mid{background:var(--amber);} .occ-bar i.hi{background:var(--alert);}
+  .watch-item{padding:8px 10px; border:1px solid var(--line); border-left:4px solid var(--alert); border-radius:9px; margin-bottom:8px; font-size:13px; background:var(--surface);}
+  .watch-item b{display:block;} .watch-item span{color:var(--alert); font-size:12px; font-weight:600;}
+  body.nonedit #mBar{display:none !important;}
+  body.mobile .occ-row{grid-template-columns:100px 1fr 120px;}
+  @media print{ #dashView{display:none !important;} }
+
+  .rm-pair{display:flex; gap:8px;} .rm-pair label{flex:1; font-size:12px; color:var(--ink-soft); display:block; margin:0;} .rm-pair input{width:100%; margin-top:2px;}
+  .refer-card{border:1px solid var(--line); border-radius:10px; padding:8px; margin-bottom:8px; background:var(--surface);}
+  .refer-card .refer-row{margin-bottom:6px;} .refer-card input[type=text]{width:100%;}
+  .refer-row2{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:6px;}
+  .refer-row2 label{font-size:12px; color:var(--ink-soft); display:block;} .refer-row2 input{width:100%; margin-top:2px;}
 </style>
 </head>
 <body>
@@ -345,21 +393,26 @@
       <div class="shift-toggle" id="viewToggle">
         <button data-view="edit" class="active">กรอกข้อมูล</button>
         <button data-view="report">รายงานหน้าเดียว</button>
+        <button data-view="dash">แดชบอร์ด</button>
       </div>
     </div>
     <div class="spacer"></div>
     <span class="status-pill saved" id="statusPill"><span class="dot"></span> บันทึกล่าสุดแล้ว</span>
+    <button class="btn btn-ghost btn-sm" id="mobileBtn">📱 โหมดมือถือ</button>
     <button class="btn btn-ghost btn-sm" id="historyBtn">ประวัติรายงาน</button>
     <button class="btn btn-ghost btn-sm" id="printBtn">พิมพ์ / PDF</button>
-    <button class="btn btn-primary" id="saveBtn">บันทึกรายงาน</button>
+    <button class="btn btn-primary" id="saveBtn">ซิงก์ / บันทึกทันที</button>
+    <button class="btn btn-ghost btn-sm" id="resetBtn" title="ลบข้อมูลรายงานเวรนี้บน Google Sheet แล้วเริ่มใหม่">รีเซ็ตรายงานนี้</button>
   </div>
 
   <div class="bar" id="historyPanel" style="display:none;">
     <div style="width:100%;">
-      <div class="section-head" style="margin-bottom:8px;"><h2 style="font-size:13.5px;">รายงานที่บันทึกไว้ก่อนหน้า</h2></div>
+      <div class="section-head" style="margin-bottom:8px;"><h2 style="font-size:13.5px;">รายงานที่บันทึกไว้ก่อนหน้า</h2><input type="date" id="histFilter" style="margin-left:auto;" title="กรองตามวันที่"></div>
       <div class="history-list" id="historyList"><p style="color:var(--ink-soft); font-size:13px;">กำลังโหลด…</p></div>
     </div>
   </div>
+
+  <div id="mBar"><button class="btn btn-ghost" id="mPrev">‹</button><select id="mSelect"></select><button class="btn btn-ghost" id="mNext">›</button></div>
 
   <div id="editView">
 
@@ -375,7 +428,7 @@
   </div>
 
   <!-- Overview table -->
-  <div class="section">
+  <div class="section" id="ovSection">
     <div class="section-head">
       <h2>ตารางสรุปภาพรวม (คำนวณอัตโนมัติ)</h2>
     </div>
@@ -394,7 +447,8 @@
             <th>คงพยาบาล</th>
             <th>เตียงว่าง</th>
             <th>CPR เฝ้าระวัง</th>
-            <th>ใส่ท่อช่วยหายใจ</th>
+            <th>เครื่องช่วยหายใจ</th>
+            <th>HF</th>
             <th>UNPLAN ICU</th>
             <th>เสียชีวิตรวม</th>
           </tr>
@@ -412,12 +466,12 @@
       <div class="panel">
         <h3><span class="sw"></span>เครื่องช่วยหายใจ</h3>
         <div class="grid-row grid-2">
-          <div class="mini-field readout"><label>รวม (ใหม่+เก่า ทุกหน่วยงาน)</label><input type="text" id="ventTotal" readonly></div>
+          <div class="mini-field readout"><label>เครื่องช่วยหายใจ รวม (ใหม่+เก่า)</label><input type="text" id="ventTotal" readonly></div>
           <div class="mini-field"><label>ไม่รวม NICU</label><input type="number" id="ventNoNicu" value="0"></div>
         </div>
         <div class="grid-row grid-2">
           <div class="mini-field readout"><label>นอกตึก (เฉพาะหน่วยงานที่ไม่ใช่ ICU)</label><input type="text" id="ventOutward" readonly></div>
-          <div></div>
+          <div class="mini-field readout"><label>HF รวม (แยกจากเครื่องช่วยหายใจ)</label><input type="text" id="hfTotal" readonly></div>
         </div>
         <p style="font-size:11.5px; color:var(--ink-soft); margin:8px 0 0;">แตะป้าย <span class="chip icu-toggle active" style="pointer-events:none; padding:1px 6px;">ICU ✓</span> ที่หัวการ์ดหน่วยงานเพื่อกำหนดว่าหน่วยงานใดเป็น ICU (ค่าเริ่มต้น: MICU, SICU, RCU, CCU, NICU)</p>
       </div>
@@ -429,8 +483,9 @@
         </div>
         <div class="grid-row grid-2">
           <div class="mini-field"><label>Ext. OPD (คน)</label><input type="number" id="erExtOpd" value="0"></div>
-          <div></div>
+          <div class="mini-field"><label>ยอดค้างที่ ER (คน)</label><input type="number" id="erPending" value="0"></div>
         </div>
+        <div class="mini-field" style="margin-top:8px;"><label>หมายเหตุ ER</label><input type="text" id="erNote" placeholder="รายละเอียดผู้ป่วยค้าง ER…"></div>
       </div>
       <div class="panel">
         <h3><span class="sw"></span>EMS</h3>
@@ -438,6 +493,7 @@
           <div class="mini-field"><label>ออกรถ (ครั้ง)</label><input type="number" id="emsOut" value="0"></div>
           <div class="mini-field"><label>Refer in (ครั้ง)</label><input type="number" id="emsReferIn" value="0"></div>
         </div>
+        <div class="mini-field" style="margin-top:8px;"><label>หมายเหตุ (ออกรถไปที่ไหน / รายละเอียด)</label><textarea id="emsNote" class="ward-notes" style="min-height:56px;" placeholder="เช่น ไป รพ.… / รับผู้ป่วยจาก…"></textarea></div>
       </div>
     </div>
   </div>
@@ -447,13 +503,13 @@
     <div class="panels">
       <div class="panel">
         <h3><span class="sw"></span>Refer in</h3>
-        <div class="refer-row"><input type="text" placeholder="โรงพยาบาลต้นทาง" class="referIn-name"><input type="number" placeholder="คน" class="referIn-count"></div>
-        <div class="refer-row"><input type="text" placeholder="โรงพยาบาลต้นทาง" class="referIn-name"><input type="number" placeholder="คน" class="referIn-count"></div>
+        <div class="refer-card"><div class="refer-row"><input type="text" placeholder="โรงพยาบาลต้นทาง" class="referIn-name"><input type="number" placeholder="คน" class="referIn-count"></div><div class="refer-row2"><label>สำเร็จ (ราย)<input type="number" class="referIn-ok" placeholder="0"></label><label>ไม่สำเร็จ (ราย)<input type="number" class="referIn-fail" placeholder="0"></label></div><input type="text" class="referIn-note" placeholder="หมายเหตุ / รายละเอียด"></div>
+        <div class="refer-card"><div class="refer-row"><input type="text" placeholder="โรงพยาบาลต้นทาง" class="referIn-name"><input type="number" placeholder="คน" class="referIn-count"></div><div class="refer-row2"><label>สำเร็จ (ราย)<input type="number" class="referIn-ok" placeholder="0"></label><label>ไม่สำเร็จ (ราย)<input type="number" class="referIn-fail" placeholder="0"></label></div><input type="text" class="referIn-note" placeholder="หมายเหตุ / รายละเอียด"></div>
       </div>
       <div class="panel">
         <h3><span class="sw"></span>Refer out</h3>
-        <div class="refer-row"><input type="text" placeholder="โรงพยาบาลปลายทาง" class="referOut-name"><input type="number" placeholder="คน" class="referOut-count"></div>
-        <div class="refer-row"><input type="text" placeholder="โรงพยาบาลปลายทาง" class="referOut-name"><input type="number" placeholder="คน" class="referOut-count"></div>
+        <div class="refer-card"><div class="refer-row"><input type="text" placeholder="โรงพยาบาลปลายทาง" class="referOut-name"><input type="number" placeholder="คน" class="referOut-count"></div><div class="refer-row2"><label>สำเร็จ (ราย)<input type="number" class="referOut-ok" placeholder="0"></label><label>ไม่สำเร็จ (ราย)<input type="number" class="referOut-fail" placeholder="0"></label></div><input type="text" class="referOut-note" placeholder="หมายเหตุ / รายละเอียด"></div>
+        <div class="refer-card"><div class="refer-row"><input type="text" placeholder="โรงพยาบาลปลายทาง" class="referOut-name"><input type="number" placeholder="คน" class="referOut-count"></div><div class="refer-row2"><label>สำเร็จ (ราย)<input type="number" class="referOut-ok" placeholder="0"></label><label>ไม่สำเร็จ (ราย)<input type="number" class="referOut-fail" placeholder="0"></label></div><input type="text" class="referOut-note" placeholder="หมายเหตุ / รายละเอียด"></div>
       </div>
       <div class="panel">
         <h3><span class="sw"></span>รายชื่อพยาบาลเวรตรวจการยามวิกาล</h3>
@@ -490,6 +546,8 @@
   </div><!-- /editView -->
 
   <!-- ===== ONE-PAGE REPORT VIEW ===== -->
+  <div id="dashView" style="display:none;"></div>
+
   <div id="reportView" style="display:none;">
     <div class="report-scale-outer" id="reportScaleOuter">
     <div class="report-page" id="reportPage">
@@ -516,6 +574,7 @@
             <th rowspan="2">เว้น</th>
             <th rowspan="2">คง<br>พยาบาล</th>
             <th rowspan="2">เตียง<br>ว่าง</th>
+            <th rowspan="2">หมายเหตุ<br>(เตียงว่าง)</th>
             <th colspan="2">ปกส.</th>
             <th colspan="2">MED นอกตึก</th>
             <th colspan="2">SURG นอกตึก</th>
@@ -543,7 +602,7 @@
         <table class="rp-box-table">
           <tr>
             <td class="rp-box-label">เครื่องช่วยหายใจ</td>
-            <td>รวม <b id="rpVentTotal">0</b></td>
+            <td>รวม <b id="rpVentTotal">0</b> &nbsp;·&nbsp; HF <b id="rpHfTotal">0</b></td>
             <td>ไม่รวม NICU <b id="rpVentNoNicu">0</b></td>
             <td>นอกตึก <b id="rpVentOutward">0</b></td>
           </tr>
@@ -554,8 +613,17 @@
             <td>Ext.OPD <b id="rpErExtOpd">0</b> คน</td>
           </tr>
           <tr>
+            <td class="rp-box-label">ER ค้าง</td>
+            <td>ยอดค้าง <b id="rpErPending">0</b> คน</td>
+            <td colspan="2" id="rpErNote">—</td>
+          </tr>
+          <tr>
             <td class="rp-box-label">EMS</td>
             <td colspan="3">ออกรถ <b id="rpEmsOut">0</b> ครั้ง &nbsp;&nbsp; Refer in <b id="rpEmsReferIn">0</b> ครั้ง</td>
+          </tr>
+          <tr>
+            <td class="rp-box-label">EMS หมายเหตุ</td>
+            <td colspan="3" id="rpEmsNote">—</td>
           </tr>
           <tr>
             <td class="rp-box-label">Refer in</td>
@@ -596,17 +664,18 @@ document.getElementById('logoImgReport').src = document.getElementById('logoImg'
 function seedWards(){
   const defs = [
     ["MICU",8,true], ["SICU",8,true], ["RCU",8,true], ["CCU",8,true], ["NICU",13,true],
+    ["ห้องคลอด",10,false,'',true],
     ["ศัลยกรรมชาย (ศช.)",20],
     ["พิเศษ 20/9",12], ["ศัลยกรรมชาย 9 (ศช.)",30], ["ศัลยกรรมหญิง 9 (ศญ.)",30],
     ["พิเศษ 20/10",12], ["ศัลยกรรมกระดูกชาย (ศกช.)",30], ["ศัลยกรรมกระดูกหญิง (ศกญ.)",30],
-    ["หอผู้ป่วยเคมีบำบัด",12], ["อายุรกรรมชาย (อช.)",30],
-    ["Premium ward : VIP/VVIP",10], ["หลังคลอด",30],
+    ["หอผู้ป่วยเคมีบำบัด",12,false,'chemo'], ["อายุรกรรมชาย (อช.)",30],
+    ["Premium ward : VIP/VVIP",10,false,'premium'], ["หลังคลอด",30],
     ["พิเศษ 20/14",11], ["อายุรกรรมชาย 14 (อช.)",30], ["อายุรกรรมหญิง 2 (อญ.2)",30],
     ["พิเศษ 20/15",12], ["อายุรกรรมหญิง 1 (อญ.1)",30], ["กุมารเวชกรรม",22], ["PICU",3],
     ["พิเศษ 20/16",12],
     ["หอผู้ป่วย 20/17 : อายุรกรรม",8], ["IMC",12], ["COHORT",10]
   ];
-  return defs.map((d,i)=>newWard(d[0], d[1], i, !!d[2]));
+  return defs.map((d,i)=>{ const w = newWard(d[0], d[1], i, !!d[2]); w.id = 's'+i; w.ord = i; w.rmType = d[3]||''; w.noCount = !!d[4]; return w; });
 }
 function blankNum(){ return 0; }
 function newWard(name, capacity, idx, isICU){
@@ -621,22 +690,22 @@ function newWard(name, capacity, idx, isICU){
     vent_new:0, vent_old:0, vent_hf:0,
     unplan_cpr:0, unplan_icu:0, unplan_pc:0, unplan_sepsis:0,
     death_nr:0, death_nrfullmed:0, death_unexpected:0,
-    notes:'',
+    notes:'', rmType:'', rm1:0, rm2:0, noCount:false,
     collapsed:false
   };
 }
 
 /* ---------- State ---------- */
 let state = {
-  date: new Date().toISOString().slice(0,10),
+  date: todayLocal(),
   shift: 'บ่าย',
   shiftTime: '16.00 - 24.00 น.',
   wards: seedWards(),
   vent: {noNicu:0, outward:0},
-  er: {visit:0, admit:0, extOpd:0},
-  ems: {out:0, referIn:0},
-  referIn: [{name:'',count:0},{name:'',count:0}],
-  referOut: [{name:'',count:0},{name:'',count:0}],
+  er:{visit:0,admit:0,extOpd:0,pending:0,note:''},
+  ems:{out:0,referIn:0,note:''},
+  referIn: [{name:'',count:0,ok:0,fail:0,note:''},{name:'',count:0,ok:0,fail:0,note:''}],
+  referOut: [{name:'',count:0,ok:0,fail:0,note:''},{name:'',count:0,ok:0,fail:0,note:''}],
   nurse1:'', nurse2:'',
   eventMajor:'', eventGeneral:'', supervision:'', supervisedUnits:''
 };
@@ -663,8 +732,10 @@ function calcBedFree(w){
 }
 function ventTotalOf(w){ return (Number(w.vent_new)||0)+(Number(w.vent_old)||0)+(Number(w.vent_hf)||0); }
 function ventNewOld(w){ return (Number(w.vent_new)||0)+(Number(w.vent_old)||0); }
-function ventSummaryTotal(){ return state.wards.reduce((s,w)=>s+ventNewOld(w),0); }
-function ventSummaryOutward(){ return state.wards.filter(w=>!w.isICU).reduce((s,w)=>s+ventNewOld(w),0); }
+const counted = w=>!w.noCount;   // หน่วยงานที่ติ๊ก "ไม่นับรวม" (เช่น ห้องคลอด) ไม่รวมในยอดทั้งหมด
+function ventSummaryTotal(){ return state.wards.filter(counted).reduce((s,w)=>s+ventNewOld(w),0); }
+function ventSummaryHF(){ return state.wards.filter(counted).reduce((s,w)=>s+(Number(w.vent_hf)||0),0); }
+function ventSummaryOutward(){ return state.wards.filter(w=>!w.isICU && counted(w)).reduce((s,w)=>s+ventNewOld(w),0); }
 function deathTotalOf(w){ return (Number(w.death_nr)||0)+(Number(w.death_nrfullmed)||0)+(Number(w.death_unexpected)||0); }
 
 function fieldRow(w, groupClass, fields){
@@ -676,7 +747,45 @@ function fieldRow(w, groupClass, fields){
   }).join('');
 }
 
+function chipsHtml(w){
+  const census = calcCensus(w), bedFree = calcBedFree(w), vent = ventNewOld(w), hf = Number(w.vent_hf)||0, death = deathTotalOf(w);
+  const hasCritical = w.watch_cpr>0 || w.unplan_cpr>0 || death>0;
+  return `
+          <button type="button" class="chip icu-toggle ${w.isICU?'active':''}" data-icutoggle="${w.id}" title="ทำเครื่องหมายว่าหน่วยงานนี้เป็น ICU (มีผลต่อยอด &quot;นอกตึก&quot; ในสรุปเครื่องช่วยหายใจ)">${w.isICU?'ICU ✓':'ICU'}</button>
+          <span class="chip">เตียง ${w.capacity}</span>
+          <span class="chip">คงพยาบาล ${census}</span>
+          <span class="chip">ว่าง ${bedFree}</span>
+          ${vent>0?`<span class="chip">เครื่องช่วยหายใจ ${vent}</span>`:''}
+          ${hf>0?`<span class="chip">HF ${hf}</span>`:''}
+          ${hasCritical?`<span class="chip warn">ต้องติดตาม</span>`:''}
+          <button type="button" class="chip icu-toggle ${w.noCount?'active':''}" data-nctoggle="${w.id}" title="หน่วยงานนี้ไม่นับรวมในยอดทั้งหมดของโรงพยาบาล">${w.noCount?'ไม่นับรวม ✓':'นับรวม'}</button>
+`;
+}
+function remarkHtml(w){
+  const L = w.rmType==='chemo' ? ['พิเศษ','สามัญ'] : w.rmType==='premium' ? ['VIP','VVIP'] : null;
+  if(!L) return '<div></div>';
+  return `<div class="mini-field"><label>หมายเหตุ (คน)</label><div class="rm-pair">
+    <label>${L[0]}<input type="number" data-key="rm1" data-ward="${w.id}" value="${w.rm1||0}"></label>
+    <label>${L[1]}<input type="number" data-key="rm2" data-ward="${w.id}" value="${w.rm2||0}"></label></div></div>`;
+}
+function bedRemark(w){
+  if(w.rmType==='chemo') return `พิเศษ ${w.rm1||0} คน · สามัญ ${w.rm2||0} คน`;
+  if(w.rmType==='premium') return `VIP ${w.rm1||0} คน · VVIP ${w.rm2||0} คน`;
+  return '';
+}
+/* อัปเดตเฉพาะตัวเลขที่คำนวณ โดยไม่สร้างฟอร์มใหม่ (ถ้าสร้างใหม่ เคอร์เซอร์จะเด้งไปหน้าสุด ทำให้พิมพ์ 28 กลายเป็น 82) */
+function updateWardLive(w){
+  const el = wardsContainer.querySelector(`.ward[data-id="${w.id}"]`);
+  if(!el) return;
+  const chips = el.querySelector('.chips'); if(chips) chips.innerHTML = chipsHtml(w);
+  const ro = el.querySelectorAll('.mini-field.readout input');
+  if(ro[0]) ro[0].value = calcCensus(w);
+  if(ro[1]) ro[1].value = calcBedFree(w);
+  renderOverview();
+}
+
 function renderWards(){
+  if(mIdx>=state.wards.length) mIdx=Math.max(0,state.wards.length-1);
   wardsContainer.innerHTML = state.wards.map((w, i)=>{
     const census = calcCensus(w);
     const bedFree = calcBedFree(w);
@@ -684,19 +793,12 @@ function renderWards(){
     const death = deathTotalOf(w);
     const hasCritical = w.watch_cpr>0 || w.unplan_cpr>0 || death>0;
     return `
-    <div class="ward ${w.collapsed?'collapsed':''}" data-id="${w.id}">
+    <div class="ward ${w.collapsed?'collapsed':''} ${i===mIdx?'m-active':''}" data-id="${w.id}">
       <div class="ward-head" data-toggle="${w.id}">
         <span class="idx">${i+1}</span>
         <input class="wname" data-ward="${w.id}" data-key="name" value="${escapeAttr(w.name)}">
-        <div class="chips">
-          <button type="button" class="chip icu-toggle ${w.isICU?'active':''}" data-icutoggle="${w.id}" title="ทำเครื่องหมายว่าหน่วยงานนี้เป็น ICU (มีผลต่อยอด &quot;นอกตึก&quot; ในสรุปเครื่องช่วยหายใจ)" onclick="event.stopPropagation()">${w.isICU?'ICU ✓':'ICU'}</button>
-          <span class="chip">เตียง ${w.capacity}</span>
-          <span class="chip">คงพยาบาล ${census}</span>
-          <span class="chip">ว่าง ${bedFree}</span>
-          ${vent>0?`<span class="chip">เครื่องช่วยหายใจ ${vent}</span>`:''}
-          ${hasCritical?`<span class="chip warn">ต้องติดตาม</span>`:''}
-        </div>
-        <button class="btn btn-danger btn-sm" data-remove="${w.id}" title="ลบหน่วยงาน" onclick="event.stopPropagation()">ลบ</button>
+        <div class="chips">${chipsHtml(w)}</div>
+        <button class="btn btn-danger btn-sm" data-remove="${w.id}" title="ลบหน่วยงาน">ลบ</button>
         <svg class="caret" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#516355" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="ward-body">
@@ -713,7 +815,7 @@ function renderWards(){
           <div class="mini-field"><label>เว้น (งดรับ)</label><input type="number" data-key="vacantHold" data-ward="${w.id}" value="${w.vacantHold}"></div>
           <div class="mini-field readout"><label>คงพยาบาล (คำนวณ)</label><input type="text" readonly value="${census}"></div>
           <div class="mini-field readout"><label>เตียงว่างที่รับได้ (คำนวณ)</label><input type="text" readonly value="${bedFree}"></div>
-          <div></div>
+          ${remarkHtml(w)}
         </div>
 
         <div class="subhead"><span class="tag">สิทธิ</span>ปกส. / MED-SURG นอกตึก (ชาย · หญิง)<span class="rule"></span></div>
@@ -762,6 +864,7 @@ function renderWards(){
   }).join('');
   wardCountEl.textContent = state.wards.length;
   renderOverview();
+  updateMobileBar();
 }
 
 function escapeAttr(s){ return String(s??'').replace(/"/g,'&quot;'); }
@@ -771,20 +874,21 @@ function escapeHtml(s){ return String(s??'').replace(/[&<>]/g, c=>({'&':'&amp;',
 function renderOverview(){
   const body = document.getElementById('ovBody');
   const foot = document.getElementById('ovFoot');
-  const totals = {capacity:0, admitPrev:0, admitNew:0, transferIn:0, discharge:0, transferOut:0, vacantHold:0, census:0, bedFree:0, watch_cpr:0, vent:0, unplan_icu:0, death:0};
+  const totals = {hf:0, capacity:0, admitPrev:0, admitNew:0, transferIn:0, discharge:0, transferOut:0, vacantHold:0, census:0, bedFree:0, watch_cpr:0, vent:0, unplan_icu:0, death:0};
   body.innerHTML = state.wards.map(w=>{
-    const census = calcCensus(w), bedFree = calcBedFree(w), vent = ventTotalOf(w), death = deathTotalOf(w);
-    totals.capacity+=Number(w.capacity)||0; totals.admitPrev+=Number(w.admitPrev)||0; totals.admitNew+=Number(w.admitNew)||0;
-    totals.transferIn+=Number(w.transferIn)||0; totals.discharge+=Number(w.discharge)||0; totals.transferOut+=Number(w.transferOut)||0;
-    totals.vacantHold+=Number(w.vacantHold)||0; totals.census+=census; totals.bedFree+=bedFree;
-    totals.watch_cpr+=Number(w.watch_cpr)||0; totals.vent+=vent; totals.unplan_icu+=Number(w.unplan_icu)||0; totals.death+=death;
+    const T = w.noCount ? {} : totals;
+    const census = calcCensus(w), bedFree = calcBedFree(w), vent = ventNewOld(w), hf = Number(w.vent_hf)||0, death = deathTotalOf(w);
+    T.capacity+=Number(w.capacity)||0; T.admitPrev+=Number(w.admitPrev)||0; T.admitNew+=Number(w.admitNew)||0;
+    T.transferIn+=Number(w.transferIn)||0; T.discharge+=Number(w.discharge)||0; T.transferOut+=Number(w.transferOut)||0;
+    T.vacantHold+=Number(w.vacantHold)||0; T.census+=census; T.bedFree+=bedFree;
+    T.watch_cpr+=Number(w.watch_cpr)||0; T.vent+=vent; T.unplan_icu+=Number(w.unplan_icu)||0; T.death+=death; T.hf+=hf;
     return `<tr>
       <td>${escapeHtml(w.name)}</td>
       <td class="num">${w.capacity}</td><td class="num">${w.admitPrev}</td><td class="num">${w.admitNew}</td>
       <td class="num">${w.transferIn}</td><td class="num">${w.discharge}</td><td class="num">${w.transferOut}</td>
       <td class="num">${w.vacantHold}</td><td class="num">${census}</td><td class="num">${bedFree}</td>
       <td class="num ${w.watch_cpr>0?'flag':''}">${w.watch_cpr}</td>
-      <td class="num">${vent}</td>
+      <td class="num">${vent}</td><td class="num">${hf}</td>
       <td class="num ${w.unplan_icu>0?'flag':''}">${w.unplan_icu}</td>
       <td class="num ${death>0?'flag':''}">${death}</td>
     </tr>`;
@@ -794,10 +898,11 @@ function renderOverview(){
     <td class="num">${totals.capacity}</td><td class="num">${totals.admitPrev}</td><td class="num">${totals.admitNew}</td>
     <td class="num">${totals.transferIn}</td><td class="num">${totals.discharge}</td><td class="num">${totals.transferOut}</td>
     <td class="num">${totals.vacantHold}</td><td class="num">${totals.census}</td><td class="num">${totals.bedFree}</td>
-    <td class="num">${totals.watch_cpr}</td><td class="num">${totals.vent}</td><td class="num">${totals.unplan_icu}</td><td class="num">${totals.death}</td>
+    <td class="num">${totals.watch_cpr}</td><td class="num">${totals.vent}</td><td class="num">${totals.hf}</td><td class="num">${totals.unplan_icu}</td><td class="num">${totals.death}</td>
   </tr>`;
   document.getElementById('ventTotal').value = ventSummaryTotal() + ' เครื่อง';
   document.getElementById('ventOutward').value = ventSummaryOutward() + ' เครื่อง';
+  document.getElementById('hfTotal').value = ventSummaryHF() + ' เครื่อง';
 }
 
 /* ---------- Event delegation for ward inputs ---------- */
@@ -809,16 +914,14 @@ wardsContainer.addEventListener('input', e=>{
   const w = state.wards.find(x=>x.id===wardId);
   if(!w) return;
   w[key] = (t.type==='number') ? (t.value===''? 0 : Number(t.value)) : t.value;
-  markDirty();
+  queueOp({t:'w', id:wardId, k:key, v:w[key]});
   // live-update computed chips/overview without full re-render jank on text/name fields
   if(t.classList.contains('wname') || t.classList.contains('ward-notes')){
     renderOverview();
     // update chip text quietly
     const chipsWrap = t.closest('.ward-head')?.querySelector('.chips');
   } else {
-    renderWards(); // recompute + re-render (also restores focus loss acceptable for numeric tab flow)
-    const input = wardsContainer.querySelector(`[data-ward="${wardId}"][data-key="${key}"]`);
-    if(input) input.focus();
+    updateWardLive(w);
   }
 });
 wardsContainer.addEventListener('click', e=>{
@@ -826,7 +929,13 @@ wardsContainer.addEventListener('click', e=>{
   if(icuBtn){
     const id = icuBtn.getAttribute('data-icutoggle');
     const w = state.wards.find(x=>x.id===id);
-    if(w){ w.isICU = !w.isICU; markDirty(); renderWards(); }
+    if(w){ w.isICU = !w.isICU; queueOp({t:'w', id:w.id, k:'isICU', v:w.isICU}); renderWards(); }
+    return;
+  }
+  const ncBtn = e.target.closest('[data-nctoggle]');
+  if(ncBtn){
+    const w = state.wards.find(x=>x.id===ncBtn.getAttribute('data-nctoggle'));
+    if(w){ w.noCount = !w.noCount; queueOp({t:'w', id:w.id, k:'noCount', v:w.noCount}); renderWards(); }
     return;
   }
   const rem = e.target.closest('[data-remove]');
@@ -834,7 +943,7 @@ wardsContainer.addEventListener('click', e=>{
     const id = rem.getAttribute('data-remove');
     if(confirm('ยืนยันการลบหน่วยงานนี้ออกจากรายงาน?')){
       state.wards = state.wards.filter(w=>w.id!==id);
-      markDirty(); renderWards();
+      queueOp({t:'del', id}); renderWards();
     }
     return;
   }
@@ -846,16 +955,19 @@ wardsContainer.addEventListener('click', e=>{
   }
 });
 document.getElementById('addWardBtn').addEventListener('click', ()=>{
-  state.wards.push(newWard('หน่วยงานใหม่', 0, state.wards.length));
-  markDirty(); renderWards();
+  const nw = newWard('หน่วยงานใหม่', 0, state.wards.length);
+  nw.ord = Math.max(state.wards.length-1, ...state.wards.map(w=>Number(w.ord)||0)) + 1;
+  state.wards.push(nw); mIdx = state.wards.length-1;
+  queueOp({t:'add', ward:stripLocal(nw)}); renderWards();
 });
 
 /* ---------- Top-level fields binding ---------- */
 function bindSimple(id, path){
   const el = document.getElementById(id);
   el.addEventListener('input', ()=>{
-    setPath(state, path, el.type==='number' ? Number(el.value||0) : el.value);
-    markDirty();
+    const v = el.type==='number' ? Number(el.value||0) : el.value;
+    setPath(state, path, v);
+    queueOp({t:'m', k:path, v});
   });
 }
 function setPath(obj, path, val){
@@ -870,29 +982,19 @@ function getPath(obj, path){
 [
   ['ventNoNicu','vent.noNicu'],
   ['erVisit','er.visit'],['erAdmit','er.admit'],['erExtOpd','er.extOpd'],
-  ['emsOut','ems.out'],['emsReferIn','ems.referIn'],
+  ['emsOut','ems.out'],['emsReferIn','ems.referIn'],['emsNote','ems.note'],['erPending','er.pending'],['erNote','er.note'],
   ['nurse1','nurse1'],['nurse2','nurse2'],
   ['eventMajor','eventMajor'],['eventGeneral','eventGeneral'],
   ['supervision','supervision'],['supervisedUnits','supervisedUnits']
 ].forEach(([id,path])=>bindSimple(id,path));
 
+['referIn','referOut'].forEach(g=>['name','count','ok','fail','note'].forEach(f=>{
+  document.querySelectorAll('.'+g+'-'+f).forEach((el,i)=>{ el.id = g+'_'+f+'_'+i; bindSimple(el.id, g+'.'+i+'.'+f); });
+}));
 function renderReferRows(){
-  document.querySelectorAll('.referIn-name').forEach((el,i)=>{
-    el.value = state.referIn[i]?.name || '';
-    el.addEventListener('input', ()=>{ state.referIn[i].name = el.value; markDirty(); });
-  });
-  document.querySelectorAll('.referIn-count').forEach((el,i)=>{
-    el.value = state.referIn[i]?.count || 0;
-    el.addEventListener('input', ()=>{ state.referIn[i].count = Number(el.value||0); markDirty(); });
-  });
-  document.querySelectorAll('.referOut-name').forEach((el,i)=>{
-    el.value = state.referOut[i]?.name || '';
-    el.addEventListener('input', ()=>{ state.referOut[i].name = el.value; markDirty(); });
-  });
-  document.querySelectorAll('.referOut-count').forEach((el,i)=>{
-    el.value = state.referOut[i]?.count || 0;
-    el.addEventListener('input', ()=>{ state.referOut[i].count = Number(el.value||0); markDirty(); });
-  });
+  ['referIn','referOut'].forEach(g=>['name','count','ok','fail','note'].forEach(f=>{
+    document.querySelectorAll('.'+g+'-'+f).forEach((el,i)=>{ const v = state[g]?.[i]?.[f]; el.value = v ?? ((f==='name'||f==='note')?'':0); });
+  }));
 }
 
 /* ---------- Date / shift ---------- */
@@ -922,75 +1024,183 @@ function setActiveShiftButton(){
 }
 setActiveShiftButton();
 
-/* ---------- Persistence ---------- */
+/* ---------- Sync: Google Sheets via Apps Script ---------- */
+const MANUAL_API_URL = '';   // ถ้าเปิดไฟล์นี้นอก Apps Script ให้วาง URL ของ Web App (ลงท้าย /exec) ที่นี่
+const API_URL = (function(){ const u = '<?!= ScriptApp.getService().getUrl() ?>'; return u.indexOf('https://')===0 ? u : MANUAL_API_URL; })();
+const CONFIGURED = /^https:\/\/script\.google(usercontent)?\.com\//.test(API_URL);
+const POLL_MS = 4000;
+// ต้องตรงกับ META_KEYS ใน Code.gs
+const META_PATHS = ['shiftTime','vent.noNicu','er.visit','er.admit','er.extOpd','ems.out','ems.referIn',
+  'referIn.0.name','referIn.0.count','referIn.1.name','referIn.1.count','referOut.0.name','referOut.0.count','referOut.1.name','referOut.1.count',
+  'nurse1','nurse2','eventMajor','eventGeneral','supervision','supervisedUnits',
+  'er.pending','er.note','ems.note',
+  'referIn.0.ok','referIn.0.fail','referIn.0.note','referIn.1.ok','referIn.1.fail','referIn.1.note',
+  'referOut.0.ok','referOut.0.fail','referOut.0.note','referOut.1.ok','referOut.1.fail','referOut.1.note'];
+
+let needSeed = false, seedTries = 0;
+let serverVersion = 0, pending = [], saving = false, loading = false, saveTimer = null, lastBy = '';
+let activeDate = null, activeShift = null, mIdx = 0;
 const statusPill = document.getElementById('statusPill');
-function markDirty(){
-  dirty = true;
-  statusPill.className = 'status-pill dirty';
-  statusPill.innerHTML = '<span class="dot"></span> มีการแก้ไขที่ยังไม่บันทึก';
-}
-function markSaved(){
-  dirty = false;
-  statusPill.className = 'status-pill saved';
-  statusPill.innerHTML = '<span class="dot"></span> บันทึกล่าสุดแล้ว';
-}
+
+function todayLocal(){ const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function lsGet(k){ try{ return localStorage.getItem(k) || ''; }catch(e){ return ''; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function setStatus(kind, msg){ statusPill.className = 'status-pill ' + (kind==='ok' ? 'saved' : 'dirty'); statusPill.innerHTML = '<span class="dot"></span> ' + msg; }
+function markDirty(){ dirty = true; setStatus('dirty', 'กำลังบันทึก…'); }
+function markSaved(by){ dirty = false; setStatus('ok', 'ซิงก์แล้ว' + (by ? ' · แก้ไขล่าสุดโดย ' + escapeHtml(by) : '')); }
 function showToast(msg){
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 2200);
 }
+function stripLocal(w){ const c = Object.assign({}, w); delete c.collapsed; return c; }
+function snapshot(){
+  const meta = {}; META_PATHS.forEach(p=>meta[p] = getPath(state, p));
+  return {meta, wards: state.wards.map((w,i)=>stripLocal(Object.assign({}, w, {ord: Number.isFinite(+w.ord) ? +w.ord : i})))};
+}
+function freshReport(){
+  Object.assign(state, {wards: seedWards(), vent:{noNicu:0,outward:0}, er:{visit:0,admit:0,extOpd:0,pending:0,note:''}, ems:{out:0,referIn:0,note:''},
+    referIn:[{name:'',count:0,ok:0,fail:0,note:''},{name:'',count:0,ok:0,fail:0,note:''}], referOut:[{name:'',count:0,ok:0,fail:0,note:''},{name:'',count:0,ok:0,fail:0,note:''}],
+    nurse1:'', nurse2:'', eventMajor:'', eventGeneral:'', supervision:'', supervisedUnits:''});
+}
 
-async function saveReport(){
-  try{
-    const payload = JSON.stringify(state);
-    const key = storageKey(state.date, state.shift);
-    const res = await window.storage.set(key, payload, true);
-    if(!res){ showToast('บันทึกไม่สำเร็จ ลองอีกครั้ง'); return; }
-    // update index
-    let idx = [];
-    try{
-      const idxRes = await window.storage.get('hgh_report_index', true);
-      idx = idxRes ? JSON.parse(idxRes.value) : [];
-    }catch(e){ idx = []; }
-    idx = idx.filter(r=>!(r.date===state.date && r.shift===state.shift));
-    idx.push({date:state.date, shift:state.shift, updatedAt:new Date().toISOString()});
-    idx.sort((a,b)=> (b.date+b.shift).localeCompare(a.date+a.shift));
-    await window.storage.set('hgh_report_index', JSON.stringify(idx), true);
-    markSaved();
-    showToast('บันทึกรายงานเรียบร้อยแล้ว');
-  }catch(err){
-    console.error(err);
-    showToast('เกิดข้อผิดพลาดขณะบันทึก');
+async function api(body, tried){
+  const res = await fetch(API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(Object.assign({pass: lsGet('hgh_pass')}, body))});
+  const j = await res.json();
+  if(j.error === 'auth' && !tried){
+    const p = prompt('กรุณาใส่รหัสผ่านของระบบ');
+    if(p === null) throw new Error('auth');
+    lsSet('hgh_pass', p);
+    return api(body, true);
   }
+  if(j.error) throw new Error(j.error);
+  return j;
+}
+
+/* แก้ไขทีละช่อง -> คิว -> ส่งขึ้นเซิร์ฟเวอร์ (ช่องล่าสุดชนะ) */
+function queueOp(op){
+  if(op.t==='w' || op.t==='m')
+    pending = pending.filter(p=>!(p.t===op.t && (p.id||'')===(op.id||'') && (p.k||'')===(op.k||'')));
+  pending.push(op);
+  markDirty();
+  clearTimeout(saveTimer); saveTimer = setTimeout(flush, 700);
+}
+function applyOpLocal(op){
+  if(op.t==='m') setPath(state, op.k, op.v);
+  else if(op.t==='w'){ const w = state.wards.find(x=>x.id===op.id); if(w) w[op.k] = op.v; }
+  else if(op.t==='add'){ if(!state.wards.some(x=>x.id===op.ward.id)) state.wards.push(Object.assign(newWard(), op.ward)); }
+  else if(op.t==='del') state.wards = state.wards.filter(x=>x.id!==op.id);
+}
+function stateSig(){ return JSON.stringify(snapshot()); }
+function captureFocus(){
+  const a = document.activeElement;
+  if(!a || a===document.body || !(a.id || a.getAttribute('data-ward'))) return null;
+  return {id:a.id, ward:a.getAttribute('data-ward'), key:a.getAttribute('data-key'), s:a.selectionStart ?? a.value.length, e:a.selectionEnd ?? a.value.length};
+}
+function restoreFocus(f){
+  if(!f) return;
+  const el = f.id ? document.getElementById(f.id) : wardsContainer.querySelector(`[data-ward="${f.ward}"][data-key="${f.key}"]`);
+  if(!el) return;
+  el.focus();
+  try{ el.setSelectionRange(f.s, f.e); }catch(e){
+    if(el.type==='number'){ el.type='text'; try{ el.setSelectionRange(f.s, f.e); }catch(_){} el.type='number'; }
+  }
+}
+function applyRemote(r){
+  if(!r) return;
+  const f = captureFocus();
+  const before = stateSig();
+  const old = new Map(state.wards.map(w=>[w.id, w]));
+  needSeed = !r.wards.length;   // รายงานบนเซิร์ฟเวอร์ไม่มีหน่วยงาน -> ใช้รายชื่อมาตรฐานแล้วส่งไปเติมให้
+  state.wards = needSeed ? seedWards() : r.wards.map(w=>Object.assign(newWard(), w, {collapsed: old.has(w.id) ? old.get(w.id).collapsed : false}));
+  Object.keys(r.meta).forEach(k=>setPath(state, k, r.meta[k]));
+  pending.forEach(applyOpLocal);          // การแก้ไขที่ยังไม่ส่ง ยังคงชนะ
+  serverVersion = r.version; lastBy = r.updatedBy || '';
+  if(!needSeed && stateSig()===before){ if(!pending.length) markSaved(lastBy); return; }   // ไม่มีอะไรเปลี่ยน: ไม่วาดหน้าใหม่ (กันเคอร์เซอร์เด้ง)
+  refreshAllUI(); restoreFocus(f);
+  if(reportView.style.display === 'block') renderReportView();
+  if(dashView.style.display === 'block') renderDash();
+  if(!pending.length) markSaved(lastBy);
+  if(needSeed && seedTries < 3){ seedTries++; queueOp({t:'m', k:'shiftTime', v:state.shiftTime}); }
+  else if(!needSeed) seedTries = 0;
+}
+
+async function flush(){
+  if(saving || !pending.length) return;
+  if(!CONFIGURED){ setStatus('dirty', 'ยังไม่ได้เชื่อมต่อ Google Sheets (ตั้งค่า API_URL)'); return; }
+  let name = lsGet('hgh_user');
+  if(!name){ name = (prompt('ชื่อผู้บันทึก (จะแสดงในประวัติการแก้ไข)') || 'ไม่ระบุ').trim().slice(0,60); lsSet('hgh_user', name); }
+  saving = true;
+  const batch = pending; pending = [];
+  const ref = {d:activeDate, s:activeShift};
+  try{
+    const r = await api({action:'save', date:ref.d, shift:ref.s, user:name, ops:batch, init: (serverVersion===0 || needSeed) ? snapshot() : null});
+    if(ref.d===activeDate && ref.s===activeShift) applyRemote(r.report);
+  }catch(e){
+    pending = batch.concat(pending);
+    setStatus('dirty', 'บันทึกไม่สำเร็จ – จะลองใหม่อัตโนมัติ');
+    setTimeout(flush, 5000);
+  }finally{
+    saving = false;
+    if(pending.length){ clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
+  }
+}
+async function flushNow(){
+  clearTimeout(saveTimer);
+  while(saving) await new Promise(r=>setTimeout(r,120));
+  await flush();
+  while(saving) await new Promise(r=>setTimeout(r,120));
+}
+
+/* ดึงข้อมูลที่เครื่องอื่นแก้ไขทุก ๆ 4 วินาที */
+async function poll(){
+  if(!CONFIGURED || document.hidden || saving || loading || pending.length || !activeDate) return;
+  const ref = {d:activeDate, s:activeShift};
+  try{
+    const r = await api({action:'get', date:ref.d, shift:ref.s, since:serverVersion});
+    if(ref.d!==activeDate || ref.s!==activeShift || saving || pending.length) return;
+    if(!r.exists && serverVersion > 0) serverVersion = 0;   // รายงานถูกลบ/รีเซ็ตจากเครื่องอื่น -> ส่งข้อมูลตั้งต้นใหม่ตอนบันทึก
+    if(r.exists && r.changed) applyRemote(r.report); else markSaved(lastBy);
+  }catch(e){ setStatus('dirty', 'ออฟไลน์ – กำลังลองเชื่อมต่อใหม่'); }
 }
 
 async function loadForCurrentSelection(){
+  loading = true;
   try{
-    const key = storageKey(state.date, state.shift);
-    const res = await window.storage.get(key, true);
-    if(res && res.value){
-      const loaded = JSON.parse(res.value);
-      state = Object.assign({}, state, loaded);
-      showToast('โหลดข้อมูลรายงานที่มีอยู่แล้ว');
-    } else {
-      // no saved report for this date/shift -> fresh sheet, keep default seed wards
-      state.wards = seedWards();
-      state.vent = {noNicu:0, outward:0};
-      state.er = {visit:0, admit:0, extOpd:0};
-      state.ems = {out:0, referIn:0};
-      state.referIn = [{name:'',count:0},{name:'',count:0}];
-      state.referOut = [{name:'',count:0},{name:'',count:0}];
-      state.nurse1=''; state.nurse2='';
-      state.eventMajor=''; state.eventGeneral=''; state.supervision=''; state.supervisedUnits='';
+    await flushNow();
+    if(pending.length){
+      if(!confirm('ยังมีข้อมูลที่ยังไม่ถูกบันทึก ต้องการละทิ้งและเปลี่ยนรายงานหรือไม่?')){
+        state.date = activeDate; state.shift = activeShift; refreshAllUI(); return;
+      }
+      pending = [];
     }
-  }catch(e){
-    // key not found throws in some environments
-    state.wards = seedWards();
-  }
-  refreshAllUI();
-  markSaved();
+    activeDate = state.date; activeShift = state.shift; serverVersion = 0; needSeed = false; seedTries = 0;
+    freshReport(); refreshAllUI();
+    if(!CONFIGURED){ setStatus('dirty', 'ยังไม่ได้เชื่อมต่อ Google Sheets (ตั้งค่า API_URL)'); return; }
+    setStatus('dirty', 'กำลังโหลด…');
+    const r = await api({action:'get', date:activeDate, shift:activeShift, since:0});
+    if(r.exists){ applyRemote(r.report); showToast('โหลดข้อมูลรายงานที่มีอยู่แล้ว'); } else markSaved();
+  }catch(e){ setStatus('dirty', 'เชื่อมต่อไม่ได้ – ตรวจสอบอินเทอร์เน็ต/URL'); }
+  finally{ loading = false; }
 }
+
+/* ---------- Mobile mode ---------- */
+function updateMobileBar(){
+  const sel = document.getElementById('mSelect');
+  sel.innerHTML = state.wards.map((w,i)=>`<option value="${i}" ${i===mIdx?'selected':''}>${i+1}. ${escapeHtml(w.name)}</option>`).join('');
+}
+function mGo(i){
+  mIdx = Math.min(Math.max(0,i), state.wards.length-1);
+  renderWards(); window.scrollTo({top:0});
+}
+document.getElementById('mSelect').addEventListener('change', e=>mGo(+e.target.value));
+document.getElementById('mPrev').addEventListener('click', ()=>mGo(mIdx-1));
+document.getElementById('mNext').addEventListener('click', ()=>mGo(mIdx+1));
+document.getElementById('mobileBtn').addEventListener('click', ()=>{
+  const on = document.body.classList.toggle('mobile');
+  document.getElementById('mobileBtn').textContent = on ? '🖥️ โหมดคอม' : '📱 โหมดมือถือ';
+});
 
 function refreshAllUI(){
   dateInput.value = state.date;
@@ -1001,6 +1211,9 @@ function refreshAllUI(){
   document.getElementById('erExtOpd').value = state.er?.extOpd||0;
   document.getElementById('emsOut').value = state.ems?.out||0;
   document.getElementById('emsReferIn').value = state.ems?.referIn||0;
+  document.getElementById('emsNote').value = state.ems?.note||'';
+  document.getElementById('erPending').value = state.er?.pending||0;
+  document.getElementById('erNote').value = state.er?.note||'';
   document.getElementById('nurse1').value = state.nurse1||'';
   document.getElementById('nurse2').value = state.nurse2||'';
   document.getElementById('eventMajor').value = state.eventMajor||'';
@@ -1011,7 +1224,10 @@ function refreshAllUI(){
   renderWards();
 }
 
-document.getElementById('saveBtn').addEventListener('click', saveReport);
+document.getElementById('saveBtn').addEventListener('click', async ()=>{
+  if(!CONFIGURED){ showToast('ยังไม่ได้ตั้งค่า API_URL'); return; }
+  await flushNow(); await poll(); showToast('ซิงก์เรียบร้อยแล้ว');
+});
 
 /* ---------- One-page report view ---------- */
 function renderReportView(){
@@ -1026,7 +1242,7 @@ function renderReportView(){
 
   const rows = state.wards.map(w=>{
     const census = calcCensus(w), bedFree = calcBedFree(w);
-    Object.keys(totals).forEach(k=>{
+    if(!w.noCount) Object.keys(totals).forEach(k=>{
       if(k==='census') totals.census+=census;
       else if(k==='bedFree') totals.bedFree+=bedFree;
       else totals[k]+= Number(w[k])||0;
@@ -1036,7 +1252,7 @@ function renderReportView(){
       <td>${escapeHtml(w.name)}</td>
       <td class="num">${w.capacity}</td><td class="num">${w.admitPrev}</td><td class="num">${w.admitNew}</td>
       <td class="num">${w.transferIn}</td><td class="num">${w.discharge}</td><td class="num">${w.transferOut}</td>
-      <td class="num">${w.vacantHold}</td><td class="num">${census}</td><td class="num">${bedFree}</td>
+      <td class="num">${w.vacantHold}</td><td class="num">${census}</td><td class="num">${bedFree}</td><td>${escapeHtml(bedRemark(w))}</td>
       <td class="num">${w.pkS_m}</td><td class="num">${w.pkS_f}</td>
       <td class="num">${w.medOut_m}</td><td class="num">${w.medOut_f}</td>
       <td class="num">${w.surgOut_m}</td><td class="num">${w.surgOut_f}</td>
@@ -1052,7 +1268,7 @@ function renderReportView(){
     <td>รวมทั้งหมด</td>
     <td class="num">${totals.capacity}</td><td class="num">${totals.admitPrev}</td><td class="num">${totals.admitNew}</td>
     <td class="num">${totals.transferIn}</td><td class="num">${totals.discharge}</td><td class="num">${totals.transferOut}</td>
-    <td class="num">${totals.vacantHold}</td><td class="num">${totals.census}</td><td class="num">${totals.bedFree}</td>
+    <td class="num">${totals.vacantHold}</td><td class="num">${totals.census}</td><td class="num">${totals.bedFree}</td><td></td>
     <td class="num">${totals.pkS_m}</td><td class="num">${totals.pkS_f}</td>
     <td class="num">${totals.medOut_m}</td><td class="num">${totals.medOut_f}</td>
     <td class="num">${totals.surgOut_m}</td><td class="num">${totals.surgOut_f}</td>
@@ -1064,6 +1280,10 @@ function renderReportView(){
   </tr>`;
 
   document.getElementById('rpVentTotal').textContent = ventSummaryTotal();
+  document.getElementById('rpHfTotal').textContent = ventSummaryHF();
+  document.getElementById('rpErPending').textContent = state.er?.pending||0;
+  document.getElementById('rpErNote').textContent = state.er?.note?.trim() || '—';
+  document.getElementById('rpEmsNote').textContent = state.ems?.note?.trim() || '—';
   document.getElementById('rpVentNoNicu').textContent = state.vent?.noNicu||0;
   document.getElementById('rpVentOutward').textContent = ventSummaryOutward();
   document.getElementById('rpErVisit').textContent = state.er?.visit||0;
@@ -1073,8 +1293,8 @@ function renderReportView(){
   document.getElementById('rpEmsReferIn').textContent = state.ems?.referIn||0;
 
   const referFmt = (arr)=> {
-    const items = arr.filter(r=>r.name && r.name.trim());
-    return items.length ? items.map(r=>`${escapeHtml(r.name)} (${r.count||0} คน)`).join(' &nbsp;·&nbsp; ') : '—';
+    const items = arr.filter(r=>(r.name && r.name.trim()) || r.count || r.ok || r.fail || (r.note && r.note.trim()));
+    return items.length ? items.map(r=>`${escapeHtml(r.name||'-')} (${r.count||0} ราย: สำเร็จ ${r.ok||0} / ไม่สำเร็จ ${r.fail||0})${r.note&&r.note.trim()?' – '+escapeHtml(r.note):''}`).join('<br>') : '—';
   };
   document.getElementById('rpReferIn').innerHTML = referFmt(state.referIn);
   document.getElementById('rpReferOut').innerHTML = referFmt(state.referOut);
@@ -1091,16 +1311,76 @@ function renderReportView(){
 const viewToggle = document.getElementById('viewToggle');
 const editView = document.getElementById('editView');
 const reportView = document.getElementById('reportView');
+const dashView = document.getElementById('dashView');
 function setViewMode(mode){
   [...viewToggle.children].forEach(b=>b.classList.toggle('active', b.getAttribute('data-view')===mode));
-  if(mode==='report'){
-    renderReportView();
-    editView.style.display = 'none';
-    reportView.style.display = 'block';
-  } else {
-    editView.style.display = 'block';
-    reportView.style.display = 'none';
-  }
+  document.body.classList.toggle('nonedit', mode!=='edit');
+  editView.style.display   = mode==='edit'   ? 'block' : 'none';
+  reportView.style.display = mode==='report' ? 'block' : 'none';
+  dashView.style.display   = mode==='dash'   ? 'block' : 'none';
+  if(mode==='report') renderReportView();
+  if(mode==='dash') renderDash();
+}
+function renderDash(){
+  const T = {cap:0,census:0,free:0,admitNew:0,transferIn:0,discharge:0,transferOut:0,death:0,cpr:0,unplanIcu:0};
+  const occ = [], watch = [];
+  state.wards.forEach(w=>{
+    const c = calcCensus(w), cap = Number(w.capacity)||0, free = calcBedFree(w), d = deathTotalOf(w), cpr = (+w.watch_cpr||0)+(+w.unplan_cpr||0);
+    if(!w.noCount){
+      T.cap+=cap; T.census+=c; T.free+=free; T.admitNew+=+w.admitNew||0; T.transferIn+=+w.transferIn||0;
+      T.discharge+=+w.discharge||0; T.transferOut+=+w.transferOut||0; T.death+=d; T.cpr+=cpr; T.unplanIcu+=+w.unplan_icu||0;
+    }
+    occ.push({name:w.name+(w.noCount?' (ไม่นับรวม)':''), c, cap, free, pct: cap ? Math.round(c*100/cap) : null});
+    const r = [];
+    if(d) r.push('เสียชีวิต '+d); if(cpr) r.push('CPR '+cpr);
+    if(+w.unplan_icu) r.push('UNPLAN ICU '+w.unplan_icu); if(+w.unplan_sepsis) r.push('sepsis '+w.unplan_sepsis);
+    if(+w.unplan_pc) r.push('PC '+w.unplan_pc); if(+w.watch_vs) r.push('V/S เปลี่ยน '+w.watch_vs); if(+w.watch_tube) r.push('ใส่ Tube '+w.watch_tube);
+    if(r.length) watch.push({name:w.name, r});
+  });
+  const pct = T.cap ? Math.round(T.census*100/T.cap) : 0;
+  const kpi = (l,v,s,cls)=>`<div class="kpi ${cls||''}"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s||'&nbsp;'}</div></div>`;
+  const er = state.er||{}, ems = state.ems||{};
+  const sum = arr=>(arr||[]).reduce((a,r)=>({n:a.n+(+r.count||0), ok:a.ok+(+r.ok||0), fail:a.fail+(+r.fail||0)}),{n:0,ok:0,fail:0});
+  const RI = sum(state.referIn), RO = sum(state.referOut);
+  const rate = x=>{ const t = x.ok+x.fail; return t ? Math.round(x.ok*100/t)+'% สำเร็จ' : ''; };
+  occ.sort((a,b)=>(b.pct??-1)-(a.pct??-1));
+  const bar = o=>{
+    const cls = o.pct>=100 ? 'hi' : o.pct>=85 ? 'mid' : '';
+    return `<div class="occ-row"><div class="n" title="${escapeAttr(o.name)}">${escapeHtml(o.name)}</div>
+      <div class="occ-bar"><i class="${cls}" style="width:${Math.min(100,o.pct||0)}%"></i></div>
+      <div class="p">${o.c}/${o.cap} · ว่าง ${o.free}${o.pct==null?'':' · '+o.pct+'%'}</div></div>`;
+  };
+  const referRows = (arr,t)=>{
+    const rows = (arr||[]).filter(r=>(r.name&&r.name.trim())||r.count||r.ok||r.fail);
+    return `<div><b style="font-size:13px;">${t}</b>`+(rows.length ? rows.map(r=>`<div class="occ-row" style="grid-template-columns:1fr auto;"><div class="n">${escapeHtml(r.name||'-')}${r.note&&r.note.trim()?' <span style="color:var(--ink-soft);font-weight:400;">– '+escapeHtml(r.note)+'</span>':''}</div><div class="p">${r.count||0} ราย · สำเร็จ ${r.ok||0} · ไม่สำเร็จ ${r.fail||0}</div></div>`).join('') : '<p style="color:var(--ink-soft);font-size:12.5px;margin:4px 0;">ไม่มีรายการ</p>')+'</div>';
+  };
+  dashView.innerHTML = `
+    <div class="section" style="margin-top:0;"><div class="section-head"><h2>สรุปยอดรวม</h2>
+      <span class="hint">${thaiDate(state.date)} · เวร${state.shift} ${state.shiftTime||''}${lastBy?' · แก้ไขล่าสุดโดย '+escapeHtml(lastBy):''}</span></div>
+      <div class="kpis">
+        ${kpi('ผู้ป่วยคงพยาบาล', T.census, 'จากเตียงทั้งหมด '+T.cap)}
+        ${kpi('เตียงว่างรวม', T.free, 'อัตราครองเตียง '+pct+'%', pct>=100?'warn':'')}
+        ${kpi('ยอดค้างที่ ER', er.pending||0, 'มาตรวจ '+(er.visit||0)+' · Admit '+(er.admit||0), (er.pending||0)>0?'warn':'')}
+        ${kpi('Refer in', RI.n, 'สำเร็จ '+RI.ok+' · ไม่สำเร็จ '+RI.fail+(rate(RI)?' ('+rate(RI)+')':''), RI.fail?'warn':'')}
+        ${kpi('Refer out', RO.n, 'สำเร็จ '+RO.ok+' · ไม่สำเร็จ '+RO.fail+(rate(RO)?' ('+rate(RO)+')':''), RO.fail?'warn':'')}
+        ${kpi('รับใหม่', T.admitNew, 'รับย้าย '+T.transferIn)}
+        ${kpi('จำหน่าย', T.discharge, 'ย้ายไป '+T.transferOut)}
+        ${kpi('เสียชีวิต', T.death, '', T.death?'warn':'')}
+        ${kpi('CPR', T.cpr, 'เฝ้าระวัง + UNPLAN', T.cpr?'warn':'')}
+        ${kpi('UNPLAN ICU', T.unplanIcu, '', T.unplanIcu?'warn':'')}
+        ${kpi('เครื่องช่วยหายใจ', ventSummaryTotal(), 'นอกตึก '+ventSummaryOutward(), 'pink')}
+        ${kpi('HF', ventSummaryHF(), 'แยกจากเครื่องช่วยหายใจ', 'pink')}
+        ${kpi('EMS ออกรถ', ems.out||0, 'Refer in '+(ems.referIn||0)+' ครั้ง')}
+      </div></div>
+    <div class="dash-grid">
+      <div class="panel"><h3><span class="sw"></span>เตียงและอัตราครองเตียงรายหน่วยงาน (มาก → น้อย)</h3>${occ.map(bar).join('')}</div>
+      <div class="panel"><h3><span class="sw"></span>หน่วยงานที่ต้องติดตาม (${watch.length})</h3>
+        ${watch.length ? watch.map(x=>`<div class="watch-item"><b>${escapeHtml(x.name)}</b><span>${x.r.join(' · ')}</span></div>`).join('')
+                       : '<p style="color:var(--ink-soft);font-size:13px;">ไม่มีเหตุการณ์ที่ต้องติดตามในเวรนี้</p>'}
+      </div>
+    </div>
+    <div class="panel" style="margin-top:14px;"><h3><span class="sw"></span>Refer in / Refer out รายโรงพยาบาล</h3>
+      ${referRows(state.referIn,'Refer in')}<div style="height:10px;"></div>${referRows(state.referOut,'Refer out')}</div>`;
 }
 viewToggle.addEventListener('click', e=>{
   const btn = e.target.closest('button');
@@ -1154,16 +1434,18 @@ historyBtn.addEventListener('click', async ()=>{
 });
 async function loadHistory(){
   const list = document.getElementById('historyList');
-  list.innerHTML = '<p style="color:var(--ink-soft);font-size:13px;">กำลังโหลด…</p>';
+  const msg = t=>`<p style="color:var(--ink-soft);font-size:13px;">${t}</p>`;
+  list.innerHTML = msg('กำลังโหลด…');
+  if(!CONFIGURED){ list.innerHTML = msg('ยังไม่ได้เชื่อมต่อ Google Sheets'); return; }
   try{
-    const idxRes = await window.storage.get('hgh_report_index', true);
-    const idx = idxRes ? JSON.parse(idxRes.value) : [];
-    if(!idx.length){ list.innerHTML = '<p style="color:var(--ink-soft);font-size:13px;">ยังไม่มีรายงานที่บันทึกไว้</p>'; return; }
-    idx.sort((a,b)=> (b.date+b.shift).localeCompare(a.date+a.shift));
-    list.innerHTML = idx.map(r=>`
-      <div class="history-item" data-date="${r.date}" data-shift="${r.shift}">
-        <span>${thaiDate(r.date)} &middot; เวร${r.shift}</span>
-        <span class="t">${new Date(r.updatedAt).toLocaleString('th-TH')}</span>
+    const r = await api({action:'list'});
+    const f = document.getElementById('histFilter').value;
+    const items = r.items.filter(x=>!f || x.date===f);
+    if(!items.length){ list.innerHTML = msg('ไม่พบรายงานที่บันทึกไว้'); return; }
+    list.innerHTML = items.map(x=>`
+      <div class="history-item" data-date="${x.date}" data-shift="${x.shift}">
+        <span>${thaiDate(x.date)} &middot; เวร${x.shift}</span>
+        <span class="t">${escapeHtml(x.updatedBy||'')} · ${new Date(x.updatedAt).toLocaleString('th-TH')}</span>
       </div>`).join('');
     list.querySelectorAll('.history-item').forEach(item=>{
       item.addEventListener('click', async ()=>{
@@ -1173,16 +1455,31 @@ async function loadHistory(){
         historyPanel.style.display = 'none';
       });
     });
-  }catch(e){
-    list.innerHTML = '<p style="color:var(--ink-soft);font-size:13px;">ยังไม่มีรายงานที่บันทึกไว้</p>';
-  }
+  }catch(e){ list.innerHTML = msg('เชื่อมต่อไม่ได้'); }
 }
+document.getElementById('histFilter').addEventListener('change', loadHistory);
+document.getElementById('resetBtn').addEventListener('click', async ()=>{
+  if(!CONFIGURED){ showToast('ยังไม่ได้ตั้งค่า API_URL'); return; }
+  if(!confirm('ลบข้อมูลของรายงาน '+thaiDate(state.date)+' เวร'+state.shift+' ทั้งหมดบน Google Sheet และเริ่มใหม่?\n(ย้อนกลับไม่ได้)')) return;
+  try{
+    clearTimeout(saveTimer); while(saving) await new Promise(r=>setTimeout(r,120));
+    pending = [];
+    await api({action:'reset', date:activeDate, shift:activeShift});
+    await loadForCurrentSelection(); showToast('รีเซ็ตรายงานแล้ว');
+  }catch(e){ showToast('รีเซ็ตไม่สำเร็จ'); }
+});
 
 /* ---------- Init ---------- */
 (async function init(){
+  if(window.matchMedia('(max-width:700px)').matches){
+    document.body.classList.add('mobile');
+    document.getElementById('mobileBtn').textContent = '🖥️ โหมดคอม';
+  }
   refreshAllUI();
-  markSaved();
   await loadForCurrentSelection();
+  setInterval(poll, POLL_MS);
+  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) poll(); });
+  window.addEventListener('beforeunload', e=>{ if(pending.length){ e.preventDefault(); e.returnValue = ''; } });
 })();
 </script>
 </body>
