@@ -1025,7 +1025,7 @@ function setActiveShiftButton(){
 setActiveShiftButton();
 
 /* ---------- Sync: Google Sheets via Apps Script ---------- */
-const MANUAL_API_URL = '';   // ถ้าเปิดไฟล์นี้นอก Apps Script ให้วาง URL ของ Web App (ลงท้าย /exec) ที่นี่
+const MANUAL_API_URL = 'https://script.google.com/macros/s/AKfycbxcg8CVYtWLPHi-dGXKzL1_0wk5xqyxGC29kiTm_Gph6CdxHwpnNarLGRi9tWNBy_kHUQ/exec';   // ถ้าเปิดไฟล์นี้นอก Apps Script ให้วาง URL ของ Web App (ลงท้าย /exec) ที่นี่
 const API_URL = (function(){ const u = '<?!= ScriptApp.getService().getUrl() ?>'; return u.indexOf('https://')===0 ? u : MANUAL_API_URL; })();
 const CONFIGURED = /^https:\/\/script\.google(usercontent)?\.com\//.test(API_URL);
 const POLL_MS = 4000;
