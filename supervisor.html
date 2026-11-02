@@ -354,6 +354,15 @@
   .refer-card .refer-row{margin-bottom:6px;} .refer-card input[type=text]{width:100%;}
   .refer-row2{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:6px;}
   .refer-row2 label{font-size:12px; color:var(--ink-soft); display:block;} .refer-row2 input{width:100%; margin-top:2px;}
+
+  .refer-extra{border:1px dashed var(--line); border-radius:10px; padding:8px; margin-bottom:8px; background:var(--surface-2,#f6f8f6);}
+  .refer-extra b{display:block; font-size:12.5px; margin-bottom:6px;}
+  .rofail-row{display:grid; grid-template-columns:78px 1fr; gap:6px; margin-bottom:6px;}
+  .rofail-row input[type=text]{width:100%;} .rofail-row .roFail-ward{grid-column:1/-1;}
+
+  .ripend-row{display:grid; grid-template-columns:70px 1fr 64px; gap:6px; margin-bottom:6px;}
+  .ripend-row input[type=text], .ripend-row input[type=number]{width:100%;}
+  .refer-extra .hint-line{font-size:11.5px; color:var(--ink-soft); margin-top:4px;} .refer-extra .hint-line.bad{color:var(--alert); font-weight:600;}
 </style>
 </head>
 <body>
@@ -505,11 +514,26 @@
         <h3><span class="sw"></span>Refer in</h3>
         <div class="refer-card"><div class="refer-row"><input type="text" placeholder="โรงพยาบาลต้นทาง" class="referIn-name"><input type="number" placeholder="คน" class="referIn-count"></div><div class="refer-row2"><label>สำเร็จ (ราย)<input type="number" class="referIn-ok" placeholder="0"></label><label>ไม่สำเร็จ (ราย)<input type="number" class="referIn-fail" placeholder="0"></label></div><input type="text" class="referIn-note" placeholder="หมายเหตุ / รายละเอียด"></div>
         <div class="refer-card"><div class="refer-row"><input type="text" placeholder="โรงพยาบาลต้นทาง" class="referIn-name"><input type="number" placeholder="คน" class="referIn-count"></div><div class="refer-row2"><label>สำเร็จ (ราย)<input type="number" class="referIn-ok" placeholder="0"></label><label>ไม่สำเร็จ (ราย)<input type="number" class="referIn-fail" placeholder="0"></label></div><input type="text" class="referIn-note" placeholder="หมายเหตุ / รายละเอียด"></div>
+        <div class="refer-extra"><b>Refer in ที่ค้าง (รพก.)</b>
+          <div class="refer-row2"><label>ปกถ (รพก) (ราย)<input type="number" id="refInPkt" placeholder="0"></label><label>ปกส (รพก) (ราย)<input type="number" id="refInPks" placeholder="0"></label></div>
+          <div style="font-size:12px;margin:8px 0 4px;color:var(--ink-soft);">ค้างอยู่ที่ รพ.ใด สิทธิอะไร กี่ราย</div>
+          <div class="ripend-row"><select class="riPend-right"><option value="">สิทธิ</option><option value="ปกถ">ปกถ</option><option value="ปกส">ปกส</option></select><input type="text" class="riPend-hosp" placeholder="ค้างอยู่ที่ รพ.ใด"><input type="number" class="riPend-count" placeholder="ราย"></div>
+          <div class="ripend-row"><select class="riPend-right"><option value="">สิทธิ</option><option value="ปกถ">ปกถ</option><option value="ปกส">ปกส</option></select><input type="text" class="riPend-hosp" placeholder="ค้างอยู่ที่ รพ.ใด"><input type="number" class="riPend-count" placeholder="ราย"></div>
+          <div class="ripend-row"><select class="riPend-right"><option value="">สิทธิ</option><option value="ปกถ">ปกถ</option><option value="ปกส">ปกส</option></select><input type="text" class="riPend-hosp" placeholder="ค้างอยู่ที่ รพ.ใด"><input type="number" class="riPend-count" placeholder="ราย"></div>
+          <div class="ripend-row"><select class="riPend-right"><option value="">สิทธิ</option><option value="ปกถ">ปกถ</option><option value="ปกส">ปกส</option></select><input type="text" class="riPend-hosp" placeholder="ค้างอยู่ที่ รพ.ใด"><input type="number" class="riPend-count" placeholder="ราย"></div>
+          <div class="ripend-row"><select class="riPend-right"><option value="">สิทธิ</option><option value="ปกถ">ปกถ</option><option value="ปกส">ปกส</option></select><input type="text" class="riPend-hosp" placeholder="ค้างอยู่ที่ รพ.ใด"><input type="number" class="riPend-count" placeholder="ราย"></div>
+          <div class="ripend-row"><select class="riPend-right"><option value="">สิทธิ</option><option value="ปกถ">ปกถ</option><option value="ปกส">ปกส</option></select><input type="text" class="riPend-hosp" placeholder="ค้างอยู่ที่ รพ.ใด"><input type="number" class="riPend-count" placeholder="ราย"></div>
+          <div class="hint-line" id="riPendHint"></div></div>
       </div>
       <div class="panel">
         <h3><span class="sw"></span>Refer out</h3>
         <div class="refer-card"><div class="refer-row"><input type="text" placeholder="โรงพยาบาลปลายทาง" class="referOut-name"><input type="number" placeholder="คน" class="referOut-count"></div><div class="refer-row2"><label>สำเร็จ (ราย)<input type="number" class="referOut-ok" placeholder="0"></label><label>ไม่สำเร็จ (ราย)<input type="number" class="referOut-fail" placeholder="0"></label></div><input type="text" class="referOut-note" placeholder="หมายเหตุ / รายละเอียด"></div>
         <div class="refer-card"><div class="refer-row"><input type="text" placeholder="โรงพยาบาลปลายทาง" class="referOut-name"><input type="number" placeholder="คน" class="referOut-count"></div><div class="refer-row2"><label>สำเร็จ (ราย)<input type="number" class="referOut-ok" placeholder="0"></label><label>ไม่สำเร็จ (ราย)<input type="number" class="referOut-fail" placeholder="0"></label></div><input type="text" class="referOut-note" placeholder="หมายเหตุ / รายละเอียด"></div>
+        <div class="refer-extra"><b>Refer out ที่ไม่สำเร็จ — ระบุสิทธิ (ปกถ/ปกส) ของที่ไหน อยู่ตึกไหน</b>
+          <div class="rofail-row"><select class="roFail-right"><option value="">สิทธิ</option><option value="ปกถ">ปกถ</option><option value="ปกส">ปกส</option></select><input type="text" class="roFail-hosp" placeholder="ของ รพ./หน่วยงานใด"><input type="text" class="roFail-ward" placeholder="ผู้ป่วยอยู่ตึก/หอผู้ป่วยใด"></div>
+          <div class="rofail-row"><select class="roFail-right"><option value="">สิทธิ</option><option value="ปกถ">ปกถ</option><option value="ปกส">ปกส</option></select><input type="text" class="roFail-hosp" placeholder="ของ รพ./หน่วยงานใด"><input type="text" class="roFail-ward" placeholder="ผู้ป่วยอยู่ตึก/หอผู้ป่วยใด"></div>
+          <div class="rofail-row"><select class="roFail-right"><option value="">สิทธิ</option><option value="ปกถ">ปกถ</option><option value="ปกส">ปกส</option></select><input type="text" class="roFail-hosp" placeholder="ของ รพ./หน่วยงานใด"><input type="text" class="roFail-ward" placeholder="ผู้ป่วยอยู่ตึก/หอผู้ป่วยใด"></div>
+          <div class="rofail-row"><select class="roFail-right"><option value="">สิทธิ</option><option value="ปกถ">ปกถ</option><option value="ปกส">ปกส</option></select><input type="text" class="roFail-hosp" placeholder="ของ รพ./หน่วยงานใด"><input type="text" class="roFail-ward" placeholder="ผู้ป่วยอยู่ตึก/หอผู้ป่วยใด"></div></div>
       </div>
       <div class="panel">
         <h3><span class="sw"></span>รายชื่อพยาบาลเวรตรวจการยามวิกาล</h3>
@@ -630,8 +654,16 @@
             <td colspan="3" id="rpReferIn">—</td>
           </tr>
           <tr>
+            <td class="rp-box-label">Refer in ค้าง (รพก.)</td>
+            <td colspan="3">ปกถ <b id="rpRiPkt">0</b> ราย &nbsp;&nbsp; ปกส <b id="rpRiPks">0</b> ราย<br><span id="rpRiPend"></span></td>
+          </tr>
+          <tr>
             <td class="rp-box-label">Refer out</td>
             <td colspan="3" id="rpReferOut">—</td>
+          </tr>
+          <tr>
+            <td class="rp-box-label">Refer out ไม่สำเร็จ</td>
+            <td colspan="3" id="rpRoFail">—</td>
           </tr>
           <tr>
             <td class="rp-box-label">พยาบาลเวรตรวจการ</td>
@@ -665,13 +697,13 @@ function seedWards(){
   const defs = [
     ["MICU",8,true], ["SICU",8,true], ["RCU",8,true], ["CCU",8,true], ["NICU",13,true],
     ["ห้องคลอด",10,false,'',true],
-    ["ศัลยกรรมชาย (ศช.)",20],
-    ["พิเศษ 20/9",12], ["ศัลยกรรมชาย 9 (ศช.)",30], ["ศัลยกรรมหญิง 9 (ศญ.)",30],
-    ["พิเศษ 20/10",12], ["ศัลยกรรมกระดูกชาย (ศกช.)",30], ["ศัลยกรรมกระดูกหญิง (ศกญ.)",30],
-    ["หอผู้ป่วยเคมีบำบัด",12,false,'chemo'], ["อายุรกรรมชาย (อช.)",30],
+    ["20/8 ศช",20],
+    ["พิเศษ 20/9",12], ["20/9 ศช",30], ["20/9 ศญ",30],
+    ["พิเศษ 20/10",12], ["20/10 ศกช",30], ["20/10 ศกญ",30],
+    ["หอผู้ป่วยเคมีบำบัด",12,false,'chemo'], ["20/11 อช",30],
     ["Premium ward : VIP/VVIP",10,false,'premium'], ["หลังคลอด",30],
-    ["พิเศษ 20/14",11], ["อายุรกรรมชาย 14 (อช.)",30], ["อายุรกรรมหญิง 2 (อญ.2)",30],
-    ["พิเศษ 20/15",12], ["อายุรกรรมหญิง 1 (อญ.1)",30], ["กุมารเวชกรรม",22], ["PICU",3],
+    ["พิเศษ 20/14",11], ["20/14 อช",30], ["20/14 อญ",30],
+    ["พิเศษ 20/15",12], ["20/15 อญ",30], ["กุมารเวชกรรม",22], ["PICU",3],
     ["พิเศษ 20/16",12],
     ["หอผู้ป่วย 20/17 : อายุรกรรม",8], ["IMC",12], ["COHORT",10]
   ];
@@ -702,7 +734,7 @@ let state = {
   shiftTime: '16.00 - 24.00 น.',
   wards: seedWards(),
   vent: {noNicu:0, outward:0},
-  er:{visit:0,admit:0,extOpd:0,pending:0,note:''},
+  er:{visit:0,admit:0,extOpd:0,pending:0,note:''}, referInPending:{pkt:0,pks:0}, roFail:[0,1,2,3].map(()=>({right:'',hosp:'',ward:''})), riPend:[0,1,2,3,4,5].map(()=>({right:'',hosp:'',count:0})),
   ems:{out:0,referIn:0,note:''},
   referIn: [{name:'',count:0,ok:0,fail:0,note:''},{name:'',count:0,ok:0,fail:0,note:''}],
   referOut: [{name:'',count:0,ok:0,fail:0,note:''},{name:'',count:0,ok:0,fail:0,note:''}],
@@ -982,7 +1014,7 @@ function getPath(obj, path){
 [
   ['ventNoNicu','vent.noNicu'],
   ['erVisit','er.visit'],['erAdmit','er.admit'],['erExtOpd','er.extOpd'],
-  ['emsOut','ems.out'],['emsReferIn','ems.referIn'],['emsNote','ems.note'],['erPending','er.pending'],['erNote','er.note'],
+  ['refInPkt','referInPending.pkt'],['refInPks','referInPending.pks'],['emsOut','ems.out'],['emsReferIn','ems.referIn'],['emsNote','ems.note'],['erPending','er.pending'],['erNote','er.note'],
   ['nurse1','nurse1'],['nurse2','nurse2'],
   ['eventMajor','eventMajor'],['eventGeneral','eventGeneral'],
   ['supervision','supervision'],['supervisedUnits','supervisedUnits']
@@ -991,7 +1023,20 @@ function getPath(obj, path){
 ['referIn','referOut'].forEach(g=>['name','count','ok','fail','note'].forEach(f=>{
   document.querySelectorAll('.'+g+'-'+f).forEach((el,i)=>{ el.id = g+'_'+f+'_'+i; bindSimple(el.id, g+'.'+i+'.'+f); });
 }));
+['right','hosp','ward'].forEach(f=>document.querySelectorAll('.roFail-'+f).forEach((el,i)=>{ el.id = 'roFail_'+f+'_'+i; bindSimple(el.id, 'roFail.'+i+'.'+f); }));
+['right','hosp','count'].forEach(f=>document.querySelectorAll('.riPend-'+f).forEach((el,i)=>{ el.id = 'riPend_'+f+'_'+i; bindSimple(el.id, 'riPend.'+i+'.'+f); }));
+function updateRiPendHint(){
+  const t = {ปกถ:0, ปกส:0}; (state.riPend||[]).forEach(x=>{ if(t[x.right]!==undefined) t[x.right]+=Number(x.count)||0; });
+  const pk = state.referInPending||{}, bad = t['ปกถ']!==(Number(pk.pkt)||0) || t['ปกส']!==(Number(pk.pks)||0);
+  const h = document.getElementById('riPendHint');
+  h.className = 'hint-line' + (bad ? ' bad' : '');
+  h.textContent = 'รวมตามรายการ: ปกถ ' + t['ปกถ'] + ' · ปกส ' + t['ปกส'] + (bad ? '  ⚠ ไม่ตรงกับยอดค้างด้านบน' : '  ✓ ตรงกับยอดค้าง');
+}
+document.querySelectorAll('.riPend-right,.riPend-count,#refInPkt,#refInPks').forEach(el=>el.addEventListener('input', updateRiPendHint));
 function renderReferRows(){
+  ['right','hosp','count'].forEach(f=>document.querySelectorAll('.riPend-'+f).forEach((el,i)=>{ el.value = state.riPend?.[i]?.[f] ?? (f==='count'?0:''); }));
+  setTimeout(updateRiPendHint,0);
+  ['right','hosp','ward'].forEach(f=>document.querySelectorAll('.roFail-'+f).forEach((el,i)=>{ el.value = state.roFail?.[i]?.[f] ?? ''; }));
   ['referIn','referOut'].forEach(g=>['name','count','ok','fail','note'].forEach(f=>{
     document.querySelectorAll('.'+g+'-'+f).forEach((el,i)=>{ const v = state[g]?.[i]?.[f]; el.value = v ?? ((f==='name'||f==='note')?'':0); });
   }));
@@ -1025,7 +1070,7 @@ function setActiveShiftButton(){
 setActiveShiftButton();
 
 /* ---------- Sync: Google Sheets via Apps Script ---------- */
-const MANUAL_API_URL = 'https://script.google.com/macros/s/AKfycbxcg8CVYtWLPHi-dGXKzL1_0wk5xqyxGC29kiTm_Gph6CdxHwpnNarLGRi9tWNBy_kHUQ/exec';   // ถ้าเปิดไฟล์นี้นอก Apps Script ให้วาง URL ของ Web App (ลงท้าย /exec) ที่นี่
+const MANUAL_API_URL = '';   // ถ้าเปิดไฟล์นี้นอก Apps Script ให้วาง URL ของ Web App (ลงท้าย /exec) ที่นี่
 const API_URL = (function(){ const u = '<?!= ScriptApp.getService().getUrl() ?>'; return u.indexOf('https://')===0 ? u : MANUAL_API_URL; })();
 const CONFIGURED = /^https:\/\/script\.google(usercontent)?\.com\//.test(API_URL);
 const POLL_MS = 4000;
@@ -1035,9 +1080,13 @@ const META_PATHS = ['shiftTime','vent.noNicu','er.visit','er.admit','er.extOpd',
   'nurse1','nurse2','eventMajor','eventGeneral','supervision','supervisedUnits',
   'er.pending','er.note','ems.note',
   'referIn.0.ok','referIn.0.fail','referIn.0.note','referIn.1.ok','referIn.1.fail','referIn.1.note',
-  'referOut.0.ok','referOut.0.fail','referOut.0.note','referOut.1.ok','referOut.1.fail','referOut.1.note'];
+  'referOut.0.ok','referOut.0.fail','referOut.0.note','referOut.1.ok','referOut.1.fail','referOut.1.note',
+  'referInPending.pkt','referInPending.pks',
+  'roFail.0.right','roFail.0.hosp','roFail.0.ward','roFail.1.right','roFail.1.hosp','roFail.1.ward','roFail.2.right','roFail.2.hosp','roFail.2.ward','roFail.3.right','roFail.3.hosp','roFail.3.ward'
+  ,'riPend.0.right','riPend.0.hosp','riPend.0.count','riPend.1.right','riPend.1.hosp','riPend.1.count','riPend.2.right','riPend.2.hosp','riPend.2.count','riPend.3.right','riPend.3.hosp','riPend.3.count','riPend.4.right','riPend.4.hosp','riPend.4.count','riPend.5.right','riPend.5.hosp','riPend.5.count'];
 
 let needSeed = false, seedTries = 0;
+let savedIds = new Set();   // หน่วยงานที่มีแถวอยู่บน Google Sheet แล้ว
 let serverVersion = 0, pending = [], saving = false, loading = false, saveTimer = null, lastBy = '';
 let activeDate = null, activeShift = null, mIdx = 0;
 const statusPill = document.getElementById('statusPill');
@@ -1059,7 +1108,7 @@ function snapshot(){
   return {meta, wards: state.wards.map((w,i)=>stripLocal(Object.assign({}, w, {ord: Number.isFinite(+w.ord) ? +w.ord : i})))};
 }
 function freshReport(){
-  Object.assign(state, {wards: seedWards(), vent:{noNicu:0,outward:0}, er:{visit:0,admit:0,extOpd:0,pending:0,note:''}, ems:{out:0,referIn:0,note:''},
+  Object.assign(state, {wards: seedWards(), vent:{noNicu:0,outward:0}, er:{visit:0,admit:0,extOpd:0,pending:0,note:''}, referInPending:{pkt:0,pks:0}, roFail:[0,1,2,3].map(()=>({right:'',hosp:'',ward:''})), riPend:[0,1,2,3,4,5].map(()=>({right:'',hosp:'',count:0})), ems:{out:0,referIn:0,note:''},
     referIn:[{name:'',count:0,ok:0,fail:0,note:''},{name:'',count:0,ok:0,fail:0,note:''}], referOut:[{name:'',count:0,ok:0,fail:0,note:''},{name:'',count:0,ok:0,fail:0,note:''}],
     nurse1:'', nurse2:'', eventMajor:'', eventGeneral:'', supervision:'', supervisedUnits:''});
 }
@@ -1080,6 +1129,7 @@ async function api(body, tried){
 
 /* แก้ไขทีละช่อง -> คิว -> ส่งขึ้นเซิร์ฟเวอร์ (ช่องล่าสุดชนะ) */
 function queueOp(op){
+  if(op.t==='w' && !savedIds.has(op.id)){ const w = state.wards.find(x=>x.id===op.id); if(w) op.base = stripLocal(w); }
   if(op.t==='w' || op.t==='m')
     pending = pending.filter(p=>!(p.t===op.t && (p.id||'')===(op.id||'') && (p.k||'')===(op.k||'')));
   pending.push(op);
@@ -1111,9 +1161,12 @@ function applyRemote(r){
   if(!r) return;
   const f = captureFocus();
   const before = stateSig();
-  const old = new Map(state.wards.map(w=>[w.id, w]));
-  needSeed = !r.wards.length;   // รายงานบนเซิร์ฟเวอร์ไม่มีหน่วยงาน -> ใช้รายชื่อมาตรฐานแล้วส่งไปเติมให้
-  state.wards = needSeed ? seedWards() : r.wards.map(w=>Object.assign(newWard(), w, {collapsed: old.has(w.id) ? old.get(w.id).collapsed : false}));
+  needSeed = false;
+  const saved = new Map(r.wards.map(w=>[w.id, w])), gone = new Set(r.deleted || []);
+  savedIds = new Set(saved.keys());
+  const local = state.wards.filter(w=>!gone.has(w.id)).map(w=>saved.has(w.id) ? Object.assign(w, saved.get(w.id)) : w);
+  r.wards.forEach(w=>{ if(!gone.has(w.id) && !local.some(x=>x.id===w.id)) local.push(Object.assign(newWard(), w)); });
+  state.wards = local.sort((x,y)=>(Number(x.ord)||0)-(Number(y.ord)||0));
   Object.keys(r.meta).forEach(k=>setPath(state, k, r.meta[k]));
   pending.forEach(applyOpLocal);          // การแก้ไขที่ยังไม่ส่ง ยังคงชนะ
   serverVersion = r.version; lastBy = r.updatedBy || '';
@@ -1122,8 +1175,6 @@ function applyRemote(r){
   if(reportView.style.display === 'block') renderReportView();
   if(dashView.style.display === 'block') renderDash();
   if(!pending.length) markSaved(lastBy);
-  if(needSeed && seedTries < 3){ seedTries++; queueOp({t:'m', k:'shiftTime', v:state.shiftTime}); }
-  else if(!needSeed) seedTries = 0;
 }
 
 async function flush(){
@@ -1135,7 +1186,7 @@ async function flush(){
   const batch = pending; pending = [];
   const ref = {d:activeDate, s:activeShift};
   try{
-    const r = await api({action:'save', date:ref.d, shift:ref.s, user:name, ops:batch, init: (serverVersion===0 || needSeed) ? snapshot() : null});
+    const r = await api({action:'save', date:ref.d, shift:ref.s, user:name, ops:batch, init: serverVersion===0 ? {meta: snapshot().meta, wards: []} : null});
     if(ref.d===activeDate && ref.s===activeShift) applyRemote(r.report);
   }catch(e){
     pending = batch.concat(pending);
@@ -1160,7 +1211,7 @@ async function poll(){
   try{
     const r = await api({action:'get', date:ref.d, shift:ref.s, since:serverVersion});
     if(ref.d!==activeDate || ref.s!==activeShift || saving || pending.length) return;
-    if(!r.exists && serverVersion > 0) serverVersion = 0;   // รายงานถูกลบ/รีเซ็ตจากเครื่องอื่น -> ส่งข้อมูลตั้งต้นใหม่ตอนบันทึก
+    if(!r.exists && serverVersion > 0){ await loadForCurrentSelection(); return; }   // รายงานถูกรีเซ็ตจากเครื่องอื่น -> เริ่มใหม่
     if(r.exists && r.changed) applyRemote(r.report); else markSaved(lastBy);
   }catch(e){ setStatus('dirty', 'ออฟไลน์ – กำลังลองเชื่อมต่อใหม่'); }
 }
@@ -1175,7 +1226,7 @@ async function loadForCurrentSelection(){
       }
       pending = [];
     }
-    activeDate = state.date; activeShift = state.shift; serverVersion = 0; needSeed = false; seedTries = 0;
+    activeDate = state.date; activeShift = state.shift; serverVersion = 0; needSeed = false; seedTries = 0; savedIds = new Set();
     freshReport(); refreshAllUI();
     if(!CONFIGURED){ setStatus('dirty', 'ยังไม่ได้เชื่อมต่อ Google Sheets (ตั้งค่า API_URL)'); return; }
     setStatus('dirty', 'กำลังโหลด…');
@@ -1213,6 +1264,8 @@ function refreshAllUI(){
   document.getElementById('emsReferIn').value = state.ems?.referIn||0;
   document.getElementById('emsNote').value = state.ems?.note||'';
   document.getElementById('erPending').value = state.er?.pending||0;
+  document.getElementById('refInPkt').value = state.referInPending?.pkt||0;
+  document.getElementById('refInPks').value = state.referInPending?.pks||0;
   document.getElementById('erNote').value = state.er?.note||'';
   document.getElementById('nurse1').value = state.nurse1||'';
   document.getElementById('nurse2').value = state.nurse2||'';
@@ -1298,6 +1351,12 @@ function renderReportView(){
   };
   document.getElementById('rpReferIn').innerHTML = referFmt(state.referIn);
   document.getElementById('rpReferOut').innerHTML = referFmt(state.referOut);
+  document.getElementById('rpRiPkt').textContent = state.referInPending?.pkt||0;
+  document.getElementById('rpRiPks').textContent = state.referInPending?.pks||0;
+  const rp = (state.riPend||[]).filter(x=>x.right||(x.hosp&&x.hosp.trim())||x.count);
+  document.getElementById('rpRiPend').innerHTML = rp.map(x=>`${escapeHtml(x.right||'-')} · ${escapeHtml(x.hosp||'-')} ${x.count||0} ราย`).join('<br>');
+  const rf = (state.roFail||[]).filter(f=>f.right||(f.hosp&&f.hosp.trim())||(f.ward&&f.ward.trim()));
+  document.getElementById('rpRoFail').innerHTML = rf.length ? rf.map(f=>`${escapeHtml(f.right||'-')} ของ ${escapeHtml(f.hosp||'-')} · อยู่ ${escapeHtml(f.ward||'-')}`).join('<br>') : '—';
   const nurses = [state.nurse1, state.nurse2].filter(n=>n && n.trim());
   document.getElementById('rpNurses').textContent = nurses.length ? nurses.join('   /   ') : '—';
 
@@ -1342,6 +1401,9 @@ function renderDash(){
   const er = state.er||{}, ems = state.ems||{};
   const sum = arr=>(arr||[]).reduce((a,r)=>({n:a.n+(+r.count||0), ok:a.ok+(+r.ok||0), fail:a.fail+(+r.fail||0)}),{n:0,ok:0,fail:0});
   const RI = sum(state.referIn), RO = sum(state.referOut);
+  const pk = state.referInPending||{}, pend = (+pk.pkt||0)+(+pk.pks||0);
+  const pends = (state.riPend||[]).filter(x=>x.right||(x.hosp&&x.hosp.trim())||x.count);
+  const fails = (state.roFail||[]).filter(f=>f.right||(f.hosp&&f.hosp.trim())||(f.ward&&f.ward.trim()));
   const rate = x=>{ const t = x.ok+x.fail; return t ? Math.round(x.ok*100/t)+'% สำเร็จ' : ''; };
   occ.sort((a,b)=>(b.pct??-1)-(a.pct??-1));
   const bar = o=>{
@@ -1362,6 +1424,7 @@ function renderDash(){
         ${kpi('เตียงว่างรวม', T.free, 'อัตราครองเตียง '+pct+'%', pct>=100?'warn':'')}
         ${kpi('ยอดค้างที่ ER', er.pending||0, 'มาตรวจ '+(er.visit||0)+' · Admit '+(er.admit||0), (er.pending||0)>0?'warn':'')}
         ${kpi('Refer in', RI.n, 'สำเร็จ '+RI.ok+' · ไม่สำเร็จ '+RI.fail+(rate(RI)?' ('+rate(RI)+')':''), RI.fail?'warn':'')}
+        ${kpi('Refer in ค้าง (รพก.)', pend, 'ปกถ '+(+pk.pkt||0)+' · ปกส '+(+pk.pks||0), pend?'warn':'')}
         ${kpi('Refer out', RO.n, 'สำเร็จ '+RO.ok+' · ไม่สำเร็จ '+RO.fail+(rate(RO)?' ('+rate(RO)+')':''), RO.fail?'warn':'')}
         ${kpi('รับใหม่', T.admitNew, 'รับย้าย '+T.transferIn)}
         ${kpi('จำหน่าย', T.discharge, 'ย้ายไป '+T.transferOut)}
@@ -1380,7 +1443,12 @@ function renderDash(){
       </div>
     </div>
     <div class="panel" style="margin-top:14px;"><h3><span class="sw"></span>Refer in / Refer out รายโรงพยาบาล</h3>
-      ${referRows(state.referIn,'Refer in')}<div style="height:10px;"></div>${referRows(state.referOut,'Refer out')}</div>`;
+      ${referRows(state.referIn,'Refer in')}
+      <div class="occ-row" style="grid-template-columns:1fr;margin-top:6px;"><div class="n">Refer in ที่ค้าง (รพก.): ปกถ ${+pk.pkt||0} ราย · ปกส ${+pk.pks||0} ราย</div></div>
+      ${pends.map(x=>`<div class="occ-row" style="grid-template-columns:1fr auto;"><div class="n">${escapeHtml(x.right||'-')} · ${escapeHtml(x.hosp||'-')}</div><div class="p">${x.count||0} ราย</div></div>`).join('')}
+      <div style="height:10px;"></div>${referRows(state.referOut,'Refer out')}
+      <div style="margin-top:8px;"><b style="font-size:13px;">Refer out ไม่สำเร็จ (สิทธิ · ของ · ตึกที่อยู่)</b>
+        ${fails.length ? fails.map(f=>`<div class="watch-item"><b>${escapeHtml(f.right||'-')} ของ ${escapeHtml(f.hosp||'-')}</b><span>อยู่ ${escapeHtml(f.ward||'-')}</span></div>`).join('') : '<p style="color:var(--ink-soft);font-size:12.5px;margin:4px 0;">ไม่มีรายการ</p>'}</div></div>`;
 }
 viewToggle.addEventListener('click', e=>{
   const btn = e.target.closest('button');
